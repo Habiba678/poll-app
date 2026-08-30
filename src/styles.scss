@@ -1,0 +1,63 @@
+@font-face {
+    font-family: "Nerko One";
+    src: url("/pollapp/fonts/Nerko_One/NerkoOne-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  
+  @font-face {
+    font-family: "Mulish";
+    src:
+      url("/pollapp/fonts/Mulish/Mulish-VariableFont_wght.ttf") format("truetype-variations"),
+      url("/pollapp/fonts/Mulish/static/Mulish-Regular.ttf") format("truetype");
+    font-weight: 200 1000;
+    font-style: normal;
+    font-display: swap;
+  }
+  
+  @font-face {
+    font-family: "Mulish";
+    src:
+      url("/pollapp/fonts/Mulish/Mulish-Italic-VariableFont_wght.ttf") format("truetype-variations"),
+      url("/pollapp/fonts/Mulish/static/Mulish-Italic.ttf") format("truetype");
+    font-weight: 200 1000;
+    font-style: italic;
+    font-display: swap;
+  }
+  
+  $primary-purple: #35273a;
+  $primary-orange: #feb770;
+  $secondary-orange: #ffcfa1;
+  $bg-card: #faf5ff;
+  
+  :root {
+    --primary-purple: #{$primary-purple};
+    --primary-orange: #{$primary-orange};
+    --secondary-orange: #{$secondary-orange};
+    --bg-card: #{$bg-card};
+  }
+  
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    background-color: #35273a;
+  }
+  
+  body {
+    font-family: "Mulish", sans-serif;
+  }
+  
+  h1,
+  h2 {
+    font-family: "Nerko One", sans-serif;
+    font-weight: 400;
+  }
+  
+  button {
+    border: none;
+    font-family: "Mulish", sans-serif;
+    cursor: pointer;
+  }
