@@ -498,6 +498,7 @@
   }
   
   @media (max-width: 1100px) {
+  
     .home-hero {
       grid-template-columns: minmax(0, 1fr) 360px;
       column-gap: 40px;
@@ -540,6 +541,7 @@
   }
   
   @media (max-width: 720px) {
+  
     .home-screen {
       padding-top: 24px;
     }
@@ -570,7 +572,7 @@
         font-size: 18px;
         line-height: 25px;
       }
-
+  
       &__visual {
         width: 360px;
         height: 420px;
@@ -578,7 +580,7 @@
         position: relative;
         display: block;
       }
-      
+  
       &__phone {
         width: 360px;
         height: 420px;
@@ -654,7 +656,9 @@
   }
   
   @media (max-width: 460px) {
+  
     .home-hero {
+  
       &__title {
         font-size: 50px;
         line-height: 47px;
@@ -667,6 +671,7 @@
     }
   
     .survey-area {
+  
       &__title {
         font-size: 46px;
         line-height: 50px;
@@ -674,6 +679,7 @@
     }
   
     .soon-surveys {
+  
       &__card {
         min-height: 200px;
       }
@@ -684,6 +690,7 @@
     }
   
     .survey-controls {
+  
       &__tabs {
         width: 100%;
       }
@@ -694,6 +701,7 @@
     }
   
     .survey-list {
+  
       &__content {
         gap: 10px;
       }

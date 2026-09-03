@@ -1,4 +1,5 @@
 <main class="home-screen">
+
     @if (loadingSurveys) {
       <p class="home-screen__message" role="status">
         Loading surveys...
@@ -20,7 +21,9 @@
     </header>
   
     <section class="home-hero">
+  
       <div class="home-hero__content">
+  
         <h1 class="home-hero__title">
           Collect Feedback,<br />
           Unlock Ideas
@@ -44,9 +47,11 @@
             alt=""
           />
         </button>
+  
       </div>
   
       <div class="home-hero__visual">
+  
         <img
           class="home-hero__phone"
           src="/assets/img/Visual 3.svg"
@@ -76,13 +81,16 @@
           src="/assets/icon/check.svg"
           alt=""
         />
+  
       </div>
+  
     </section>
   
     <section
       class="survey-area"
       aria-labelledby="survey-area-title"
     >
+  
       <h2
         id="survey-area-title"
         class="survey-area__title"
@@ -91,17 +99,21 @@
       </h2>
   
       <div class="survey-area__soon">
+  
         <h3 class="survey-area__soon-title">
           Ending soon surveys
         </h3>
   
         <div class="soon-surveys">
+  
           @for (survey of endingSoonSurveys; track survey.id) {
+  
             <button
               class="soon-surveys__card"
               type="button"
               (click)="showSurveyDetails(survey.id)"
             >
+  
               <span class="soon-surveys__category">
                 {{ survey.category }}
               </span>
@@ -113,20 +125,28 @@
               <span class="soon-surveys__deadline">
                 {{ survey.deadlineLabel }}
               </span>
+  
             </button>
+  
           } @empty {
+  
             <div class="soon-surveys__empty">
               No surveys ending soon.
             </div>
+  
           }
+  
         </div>
+  
       </div>
   
       <div class="survey-controls">
+  
         <div
           class="survey-controls__tabs"
           aria-label="Survey status"
         >
+  
           <button
             class="survey-controls__tab"
             type="button"
@@ -146,9 +166,11 @@
           >
             Past survey
           </button>
+  
         </div>
   
         <div class="category-filter">
+  
           <button
             class="category-filter__button"
             type="button"
@@ -156,7 +178,10 @@
             [attr.aria-expanded]="categoryDropdownVisible"
             (click)="switchCategoryDropdown($event)"
           >
-            <span>Sort by categories</span>
+  
+            <span>
+              Sort by categories
+            </span>
   
             <span
               class="category-filter__arrow"
@@ -165,15 +190,19 @@
             >
               ▾
             </span>
+  
           </button>
   
           @if (categoryDropdownVisible) {
+  
             <div
               class="category-filter__menu"
               role="listbox"
               aria-label="Survey categories"
             >
+  
               @for (category of surveyCategories; track category) {
+  
                 <button
                   class="category-filter__option"
                   type="button"
@@ -184,16 +213,21 @@
                 >
                   {{ category }}
                 </button>
+  
               }
+  
             </div>
+  
           }
   
           @if (activeCategory !== 'All Surveys') {
+  
             <button
               class="category-filter__selected"
               type="button"
               (click)="clearSurveyCategory($event)"
             >
+  
               <span>
                 {{ activeCategory }}
               </span>
@@ -204,29 +238,38 @@
               >
                 ×
               </span>
+  
             </button>
+  
           }
+  
         </div>
+  
       </div>
   
       <div class="survey-list-wrapper">
+  
         <div
           class="survey-list"
           role="region"
           aria-label="Available surveys"
           tabindex="0"
         >
+  
           @for (survey of displayedSurveys; track survey.id) {
+  
             <button
               class="survey-list__card"
               type="button"
               (click)="showSurveyDetails(survey.id)"
             >
+  
               <span class="survey-list__category">
                 {{ survey.category }}
               </span>
   
               <span class="survey-list__content">
+  
                 <span class="survey-list__name">
                   {{ survey.title }}
                 </span>
@@ -234,10 +277,15 @@
                 <span class="survey-list__deadline">
                   {{ survey.deadlineLabel }}
                 </span>
+  
               </span>
+  
             </button>
+  
           } @empty {
+  
             <div class="survey-list__empty">
+  
               <h3 class="survey-list__empty-title">
                 No surveys found
               </h3>
@@ -245,18 +293,25 @@
               <p class="survey-list__empty-text">
                 There are currently no surveys for this selection.
               </p>
+  
             </div>
+  
           }
+  
         </div>
+  
       </div>
+  
     </section>
   
     @if (createSurveyVisible) {
+  
       <div
         class="create-overlay"
         role="presentation"
         (click)="hideCreateSurvey()"
       >
+  
         <div
           class="create-overlay__content"
           role="dialog"
@@ -264,6 +319,7 @@
           aria-labelledby="create-survey-heading"
           (click)="$event.stopPropagation()"
         >
+  
           <button
             class="create-overlay__close"
             type="button"
@@ -279,7 +335,11 @@
           >
             Create Survey
           </h2>
+  
         </div>
+  
       </div>
+  
     }
+  
   </main>
