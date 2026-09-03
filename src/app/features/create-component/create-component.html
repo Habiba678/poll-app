@@ -1,0 +1,346 @@
+<div class="create-overlay" (click)="cancelCreate()">
+    <main class="create-panel" (click)="$event.stopPropagation()">
+  
+      <section class="create-card">
+  
+        <header class="create-header">
+          <div class="create-header__left">
+            <span class="create-status">Draft</span>
+            <h1 class="create-heading">Create new survey</h1>
+          </div>
+  
+          <button
+            class="create-cancel"
+            type="button"
+            (click)="cancelCreate()"
+          >
+            <span class="create-cancel__text">Cancel</span>
+            <span class="create-cancel__icon">×</span>
+          </button>
+        </header>
+  
+        <div class="create-form">
+  
+          <section class="create-info">
+  
+            <div class="create-info__left">
+  
+              <div class="create-field">
+                <label class="create-label" for="surveyTitle">
+                  Survey name
+                </label>
+  
+                <div class="create-input-row">
+                  <input
+                    id="surveyTitle"
+                    class="create-input"
+                    type="text"
+                    [(ngModel)]="surveyTitle"
+                    #titleInput="ngModel"
+                    required
+                  >
+  
+                  <button
+                    class="delete-field"
+                    type="button"
+                    (click)="resetTitle()"
+                    aria-label="Delete survey name"
+                  >
+                    ×
+                  </button>
+                </div>
+  
+                @if ((titleInput.invalid && titleInput.touched) || (publishAttempted && !surveyTitle.trim())) {
+                  <span class="create-error">
+                    Survey name is required
+                  </span>
+                }
+              </div>
+  
+              <div class="create-meta-row">
+  
+                <div class="create-field">
+                  <label class="create-label" for="surveyEndDate">
+                    Set end date
+                    <span class="create-optional">(optional)</span>
+                  </label>
+  
+                  <div class="create-input-row">
+                    <input
+                      id="surveyEndDate"
+                      class="create-input"
+                      type="date"
+                      [(ngModel)]="surveyEndDate"
+                      [min]="minimumDate"
+                    >
+  
+                    <button
+                      class="delete-field"
+                      type="button"
+                      (click)="resetEndDate()"
+                      aria-label="Delete end date"
+                    >
+                      ×
+                    </button>
+                  </div>
+                </div>
+  
+                <div class="create-category">
+  
+                  <button
+                    class="category-select"
+                    type="button"
+                    [class.category-select--invalid]="publishAttempted && !selectedCategory"
+                    (click)="toggleCategories($event)"
+                  >
+                    <span>
+                      {{ selectedCategory || 'Choose category' }}
+                    </span>
+  
+                    <span class="category-arrow">
+                      {{ categoryMenuOpen ? '▲' : '▼' }}
+                    </span>
+                  </button>
+  
+                  @if (categoryMenuOpen) {
+                    <div class="category-menu">
+  
+                      @for (categoryItem of categoryOptions; track categoryItem) {
+                        <button
+                          class="category-menu__item"
+                          type="button"
+                          [class.category-menu__item--selected]="categoryItem === selectedCategory"
+                          (click)="chooseCategory(categoryItem, $event)"
+                        >
+                          {{ categoryItem }}
+                        </button>
+                      }
+  
+                    </div>
+                  }
+  
+                  @if (selectedCategory) {
+                    <button
+                      class="selected-category"
+                      type="button"
+                      (click)="clearCategory($event)"
+                    >
+                      {{ selectedCategory }}
+                      <span>×</span>
+                    </button>
+                  }
+  
+                  @if (publishAttempted && !selectedCategory) {
+                    <span class="create-error">
+                      Category is required
+                    </span>
+                  }
+  
+                </div>
+  
+              </div>
+  
+            </div>
+  
+            <div class="create-info__right">
+  
+              <div class="create-field">
+                <label class="create-label" for="surveyDescription">
+                  Describing text
+                  <span class="create-optional">(optional)</span>
+                </label>
+  
+                <div class="create-textarea-row">
+                  <textarea
+                    id="surveyDescription"
+                    class="create-textarea"
+                    [(ngModel)]="surveyDescription"
+                  ></textarea>
+  
+                  <button
+                    class="delete-field delete-field--top"
+                    type="button"
+                    (click)="resetDescription()"
+                    aria-label="Delete description"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+  
+            </div>
+  
+          </section>
+  
+          <section class="question-area">
+  
+            @for (questionItem of surveyQuestions; track questionItem.id; let questionIndex = $index) {
+  
+              <article class="question-block">
+  
+                <div class="question-header">
+                  <h2 class="question-title">
+                    {{ questionIndex + 1 }}. Question
+                  </h2>
+  
+                  <button
+                    class="question-delete"
+                    type="button"
+                    (click)="deleteQuestion(questionIndex)"
+                    aria-label="Delete question"
+                  >
+                    ×
+                  </button>
+                </div>
+  
+                <div class="question-field">
+  
+                  <input
+                    class="create-input question-input"
+                    type="text"
+                    [(ngModel)]="questionItem.text"
+                    #questionInput="ngModel"
+                    required
+                    placeholder="Enter your question"
+                  >
+  
+                  @if (
+                    (questionInput.invalid && questionInput.touched) ||
+                    (publishAttempted && !questionItem.text.trim())
+                  ) {
+                    <span class="create-error">
+                      Question is required
+                    </span>
+                  }
+  
+                </div>
+  
+                <div class="answer-header">
+  
+                  <span class="answer-heading">
+                    Answers
+                  </span>
+  
+                  <label class="multiple-answer">
+                    <input
+                      type="checkbox"
+                      [(ngModel)]="questionItem.multipleAnswers"
+                    >
+  
+                    <span>
+                      Allow multiple answers.
+                    </span>
+                  </label>
+  
+                </div>
+  
+                <div class="answer-list">
+  
+                  @for (answerItem of questionItem.answers; track answerItem.key; let answerIndex = $index) {
+  
+                    <div class="answer-item">
+  
+                      <span class="answer-letter">
+                        {{ answerItem.key }}.
+                      </span>
+  
+                      <div class="answer-input-wrapper">
+  
+                        <input
+                          class="create-input answer-input"
+                          type="text"
+                          [(ngModel)]="answerItem.text"
+                          #answerInput="ngModel"
+                          required
+                        >
+  
+                        @if (
+                          (answerInput.invalid && answerInput.touched) ||
+                          (publishAttempted && !answerItem.text.trim())
+                        ) {
+                          <span class="create-error">
+                            Answer is required
+                          </span>
+                        }
+  
+                      </div>
+  
+                      <button
+                        class="answer-delete"
+                        type="button"
+                        (click)="deleteAnswer(questionItem, answerIndex)"
+                        aria-label="Delete answer"
+                      >
+                        ×
+                      </button>
+  
+                    </div>
+  
+                  }
+  
+                </div>
+  
+                @if (questionItem.answers.length < 5) {
+                  <button
+                    class="add-answer"
+                    type="button"
+                    (click)="addAnswer(questionItem)"
+                  >
+                    <span>Add answer</span>
+                    <span class="add-circle">+</span>
+                  </button>
+                }
+  
+              </article>
+  
+            }
+  
+          </section>
+  
+          <div class="add-question-area">
+            <button
+              class="add-question"
+              type="button"
+              (click)="addQuestion()"
+            >
+              <span>Add next question</span>
+              <span class="add-circle">+</span>
+            </button>
+          </div>
+  
+        </div>
+  
+        <footer class="create-footer">
+          <button
+            class="publish-survey"
+            type="button"
+            (click)="publishSurvey()"
+          >
+            Publish
+          </button>
+        </footer>
+  
+      </section>
+  
+      @if (publishMessageVisible) {
+        <div class="publish-message">
+  
+          <button
+            class="publish-message__close"
+            type="button"
+            (click)="closePublishMessage()"
+            aria-label="Close message"
+          >
+            ×
+          </button>
+  
+          <span class="publish-message__text">
+            Your survey is now<br>
+            published
+          </span>
+  
+        </div>
+      }
+  
+    </main>
+  </div>
