@@ -29,7 +29,7 @@ interface Survey {
   selector: 'app-survey-detail',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './survey-detail.htm',
+  templateUrl: './survey-detail.html',
   styleUrl: './survey-detail.scss'
 })
 export class SurveyDetailComponent implements OnInit {

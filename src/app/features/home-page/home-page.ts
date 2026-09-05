@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
 
+import { CreateComponent } from '../create-component/create-component';
+import { SurveyDetailComponent } from '../survey-detail/survey-detail';
+
 type SurveyStatus = 'active' | 'past';
 
 interface Survey {
@@ -15,7 +18,11 @@ interface Survey {
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    CreateComponent,
+    SurveyDetailComponent,
+  ],
   templateUrl: './home-page.html',
   styleUrl: './home-page.scss'
 })
