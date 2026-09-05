@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
 
+import { SURVEY_DATA } from '../../core/data/survey-data';
 import { CreateComponent } from '../create-component/create-component';
 import { SurveyDetailComponent } from '../survey-detail/survey-detail';
 
 type SurveyStatus = 'active' | 'past';
 
 interface Survey {
-  id: number;
+  id: string;
   category: string;
   title: string;
   deadline: string;
@@ -21,7 +22,7 @@ interface Survey {
   imports: [
     CommonModule,
     CreateComponent,
-    SurveyDetailComponent,
+    SurveyDetailComponent
   ],
   templateUrl: './home-page.html',
   styleUrl: './home-page.scss'
@@ -36,99 +37,37 @@ export class HomePage {
   categoryDropdownVisible = false;
   createSurveyVisible = false;
 
-  selectedSurveyId: number | null = null;
+  selectedSurveyId: string | null = null;
 
   surveyCategories: string[] = [
     'All Surveys',
-    'Team Activities',
-    'Health & Wellness',
-    'Gaming & Entertainment',
-    'Education & Learning',
-    'Lifestyle & Preferences',
-    'Technology & Innovation',
-    'Workplace Culture'
+    ...Array.from(
+      new Set(SURVEY_DATA.map(survey => survey.category))
+    )
   ];
 
-  surveys: Survey[] = [
-    {
-      id: 1,
-      category: 'Team Activities',
-      title: 'Let’s Plan the Next Team Event Together',
-      deadline: '2026-09-01',
-      deadlineLabel: 'Ends in 1 Day',
-      status: 'active'
-    },
-    {
-      id: 2,
-      category: 'Health & Wellness',
-      title: 'Fit & wellness survey!',
-      deadline: '2026-09-02',
-      deadlineLabel: 'Ends in 2 Days',
-      status: 'active'
-    },
-    {
-      id: 3,
-      category: 'Gaming & Entertainment',
-      title: 'Gaming habits and favorite games!',
-      deadline: '2026-09-03',
-      deadlineLabel: 'Ends in 3 Days',
-      status: 'active'
-    },
-    {
-      id: 4,
-      category: 'Team Activities',
-      title: 'Let’s Plan the Next Team Event Together',
-      deadline: '2026-09-04',
-      deadlineLabel: 'Ends in 4 Days',
-      status: 'active'
-    },
-    {
-      id: 5,
-      category: 'Gaming & Entertainment',
-      title: 'Gaming habits and favorite games!',
-      deadline: '2026-09-05',
-      deadlineLabel: 'Ends in 5 Days',
-      status: 'active'
-    },
-    {
-      id: 6,
-      category: 'Health & Wellness',
-      title: 'Healthier future: Fit & wellness survey!',
-      deadline: '2026-09-06',
-      deadlineLabel: 'Ends in 6 Days',
-      status: 'active'
-    },
-    {
-      id: 7,
-      category: 'Workplace Culture',
-      title: 'What makes a great workplace?',
-      deadline: '2026-08-15',
-      deadlineLabel: 'Ended',
-      status: 'past'
-    },
-    {
-      id: 8,
-      category: 'Education & Learning',
-      title: 'Favorite ways to learn',
-      deadline: '2026-08-10',
-      deadlineLabel: 'Ended',
-      status: 'past'
-    }
-  ];
+  surveys: Survey[] = SURVEY_DATA.map(survey => ({
+    id: survey.id,
+    category: survey.category,
+    title: this.getHomepageTitle(survey.id, survey.title),
+    deadline: survey.endsOn,
+    deadlineLabel: survey.badge,
+    status: survey.status === 'Published' ? 'active' : 'past'
+  }));
 
   get endingSoonSurveys(): Survey[] {
     return this.surveys
-      .filter((survey) => survey.status === 'active')
+      .filter(survey => survey.status === 'active')
       .sort(
         (firstSurvey, secondSurvey) =>
-          new Date(firstSurvey.deadline).getTime() -
-          new Date(secondSurvey.deadline).getTime()
+          this.convertDate(firstSurvey.deadline).getTime() -
+          this.convertDate(secondSurvey.deadline).getTime()
       )
       .slice(0, 3);
   }
 
   get displayedSurveys(): Survey[] {
-    return this.surveys.filter((survey) => {
+    return this.surveys.filter(survey => {
       const matchesStatus = survey.status === this.currentStatus;
 
       const matchesCategory =
@@ -175,11 +114,37 @@ export class HomePage {
     this.createSurveyVisible = false;
   }
 
-  showSurveyDetails(surveyId: number): void {
+  showSurveyDetails(surveyId: string): void {
     this.selectedSurveyId = surveyId;
   }
 
   closeSurveyDetails(): void {
     this.selectedSurveyId = null;
+  }
+
+  private getHomepageTitle(surveyId: string, originalTitle: string): string {
+    if (surveyId === '1') {
+      return 'Let’s Plan the Next Team Event Together';
+    }
+
+    if (surveyId === '2') {
+      return 'Fit & wellness survey!';
+    }
+
+    if (surveyId === '3') {
+      return 'Gaming habits and favorite games!';
+    }
+
+    return originalTitle;
+  }
+
+  private convertDate(date: string): Date {
+    const [day, month, year] = date.split('.');
+
+    return new Date(
+      Number(year),
+      Number(month) - 1,
+      Number(day)
+    );
   }
 }

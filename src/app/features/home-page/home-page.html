@@ -1,322 +1,322 @@
-<main class="home-screen">
+@if (selectedSurveyId === null) {
 
-  @if (loadingSurveys) {
-    <p class="home-screen__message" role="status">
-      Loading surveys...
-    </p>
-  }
+  <main class="home-screen">
 
-  @if (surveyError) {
-    <p class="home-screen__message home-screen__message--error" role="alert">
-      {{ surveyError }}
-    </p>
-  }
-
-  <header class="home-header">
-    <img
-      class="home-header__logo"
-      src="/assets/icons/pollapp-logo.svg"
-      alt="Poll App"
-    />
-  </header>
-
-  <section class="home-hero">
-
-    <div class="home-hero__content">
-
-      <h1 class="home-hero__title">
-        Collect Feedback,<br />
-        Unlock Ideas
-      </h1>
-
-      <p class="home-hero__text">
-        Create and share surveys in minutes – from team events to workplace culture.
-        Collect opinions, engage your audience, and turn feedback into action.
+    @if (loadingSurveys) {
+      <p class="home-screen__message" role="status">
+        Loading surveys...
       </p>
+    }
 
-      <button
-        class="home-hero__button"
-        type="button"
-        (click)="showCreateSurvey()"
-      >
-        <span>New survey</span>
+    @if (surveyError) {
+      <p class="home-screen__message home-screen__message--error" role="alert">
+        {{ surveyError }}
+      </p>
+    }
+
+    <header class="home-header">
+      <img
+        class="home-header__logo"
+        src="/assets/icons/pollapp-logo.svg"
+        alt="Poll App"
+      />
+    </header>
+
+    <section class="home-hero">
+
+      <div class="home-hero__content">
+
+        <h1 class="home-hero__title">
+          Collect Feedback,<br />
+          Unlock Ideas
+        </h1>
+
+        <p class="home-hero__text">
+          Create and share surveys in minutes – from team events to workplace culture.
+          Collect opinions, engage your audience, and turn feedback into action.
+        </p>
+
+        <button
+          class="home-hero__button"
+          type="button"
+          (click)="showCreateSurvey()"
+        >
+          <span>New survey</span>
+
+          <img
+            class="home-hero__button-icon"
+            src="/assets/icons/icon-add-circle-purple.svg"
+            alt=""
+          />
+        </button>
+
+      </div>
+
+      <div class="home-hero__visual">
 
         <img
-          class="home-hero__button-icon"
-          src="/assets/icons/icon-add-circle-purple.svg"
+          class="home-hero__phone"
+          src="/assets/img/Visual 3.svg"
           alt=""
         />
-      </button>
 
-    </div>
+        <img
+          class="home-hero__decoration home-hero__decoration--question"
+          src="/assets/icon/questin-mark.svg"
+          alt=""
+        />
 
-    <div class="home-hero__visual">
+        <img
+          class="home-hero__decoration home-hero__decoration--message"
+          src="/assets/icon/typing-bubble.svg"
+          alt=""
+        />
 
-      <img
-        class="home-hero__phone"
-        src="/assets/img/Visual 3.svg"
-        alt=""
-      />
+        <img
+          class="home-hero__decoration home-hero__decoration--star"
+          src="/assets/icon/star.svg"
+          alt=""
+        />
 
-      <img
-        class="home-hero__decoration home-hero__decoration--question"
-        src="/assets/icon/questin-mark.svg"
-        alt=""
-      />
+        <img
+          class="home-hero__decoration home-hero__decoration--check"
+          src="/assets/icon/check.svg"
+          alt=""
+        />
 
-      <img
-        class="home-hero__decoration home-hero__decoration--message"
-        src="/assets/icon/typing-bubble.svg"
-        alt=""
-      />
+      </div>
 
-      <img
-        class="home-hero__decoration home-hero__decoration--star"
-        src="/assets/icon/star.svg"
-        alt=""
-      />
+    </section>
 
-      <img
-        class="home-hero__decoration home-hero__decoration--check"
-        src="/assets/icon/check.svg"
-        alt=""
-      />
-
-    </div>
-
-  </section>
-
-  <section
-    class="survey-area"
-    aria-labelledby="survey-area-title"
-  >
-
-    <h2
-      id="survey-area-title"
-      class="survey-area__title"
+    <section
+      class="survey-area"
+      aria-labelledby="survey-area-title"
     >
-      Your surveys
-    </h2>
 
-    <div class="survey-area__soon">
-
-      <h3 class="survey-area__soon-title">
-        Ending soon surveys
-      </h3>
-
-      <div class="soon-surveys">
-
-        @for (survey of endingSoonSurveys; track survey.id) {
-
-          <button
-            class="soon-surveys__card"
-            type="button"
-            (click)="showSurveyDetails(survey.id)"
-          >
-
-            <span class="soon-surveys__category">
-              {{ survey.category }}
-            </span>
-
-            <span class="soon-surveys__name">
-              {{ survey.title }}
-            </span>
-
-            <span class="soon-surveys__deadline">
-              {{ survey.deadlineLabel }}
-            </span>
-
-          </button>
-
-        } @empty {
-
-          <div class="soon-surveys__empty">
-            No surveys ending soon.
-          </div>
-
-        }
-
-      </div>
-
-    </div>
-
-    <div class="survey-controls">
-
-      <div
-        class="survey-controls__tabs"
-        aria-label="Survey status"
+      <h2
+        id="survey-area-title"
+        class="survey-area__title"
       >
+        Your surveys
+      </h2>
 
-        <button
-          class="survey-controls__tab"
-          type="button"
-          [class.survey-controls__tab--active]="currentStatus === 'active'"
-          [attr.aria-pressed]="currentStatus === 'active'"
-          (click)="selectSurveyStatus('active')"
-        >
-          Active survey
-        </button>
+      <div class="survey-area__soon">
 
-        <button
-          class="survey-controls__tab"
-          type="button"
-          [class.survey-controls__tab--active]="currentStatus === 'past'"
-          [attr.aria-pressed]="currentStatus === 'past'"
-          (click)="selectSurveyStatus('past')"
-        >
-          Past survey
-        </button>
+        <h3 class="survey-area__soon-title">
+          Ending soon surveys
+        </h3>
 
-      </div>
+        <div class="soon-surveys">
 
-      <div class="category-filter">
+          @for (survey of endingSoonSurveys; track survey.id) {
 
-        <button
-          class="category-filter__button"
-          type="button"
-          aria-haspopup="listbox"
-          [attr.aria-expanded]="categoryDropdownVisible"
-          (click)="switchCategoryDropdown($event)"
-        >
-
-          <span>
-            Sort by categories
-          </span>
-
-          <span
-            class="category-filter__arrow"
-            [class.category-filter__arrow--open]="categoryDropdownVisible"
-            aria-hidden="true"
-          >
-            ▾
-          </span>
-
-        </button>
-
-        @if (categoryDropdownVisible) {
-
-          <div
-            class="category-filter__menu"
-            role="listbox"
-            aria-label="Survey categories"
-          >
-
-            @for (category of surveyCategories; track category) {
-
-              <button
-                class="category-filter__option"
-                type="button"
-                role="option"
-                [class.category-filter__option--selected]="activeCategory === category"
-                [attr.aria-selected]="activeCategory === category"
-                (click)="selectSurveyCategory(category, $event)"
-              >
-                {{ category }}
-              </button>
-
-            }
-
-          </div>
-
-        }
-
-        @if (activeCategory !== 'All Surveys') {
-
-          <button
-            class="category-filter__selected"
-            type="button"
-            (click)="clearSurveyCategory($event)"
-          >
-
-            <span>
-              {{ activeCategory }}
-            </span>
-
-            <span
-              class="category-filter__remove"
-              aria-hidden="true"
+            <button
+              class="soon-surveys__card"
+              type="button"
+              (click)="showSurveyDetails(survey.id)"
             >
-              ×
-            </span>
 
-          </button>
+              <span class="soon-surveys__category">
+                {{ survey.category }}
+              </span>
 
-        }
-
-      </div>
-
-    </div>
-
-    <div class="survey-list-wrapper">
-
-      <div
-        class="survey-list"
-        role="region"
-        aria-label="Available surveys"
-        tabindex="0"
-      >
-
-        @for (survey of displayedSurveys; track survey.id) {
-
-          <button
-            class="survey-list__card"
-            type="button"
-            (click)="showSurveyDetails(survey.id)"
-          >
-
-            <span class="survey-list__category">
-              {{ survey.category }}
-            </span>
-
-            <span class="survey-list__content">
-
-              <span class="survey-list__name">
+              <span class="soon-surveys__name">
                 {{ survey.title }}
               </span>
 
-              <span class="survey-list__deadline">
+              <span class="soon-surveys__deadline">
                 {{ survey.deadlineLabel }}
               </span>
 
+            </button>
+
+          } @empty {
+
+            <div class="soon-surveys__empty">
+              No surveys ending soon.
+            </div>
+
+          }
+
+        </div>
+
+      </div>
+
+      <div class="survey-controls">
+
+        <div
+          class="survey-controls__tabs"
+          aria-label="Survey status"
+        >
+
+          <button
+            class="survey-controls__tab"
+            type="button"
+            [class.survey-controls__tab--active]="currentStatus === 'active'"
+            [attr.aria-pressed]="currentStatus === 'active'"
+            (click)="selectSurveyStatus('active')"
+          >
+            Active survey
+          </button>
+
+          <button
+            class="survey-controls__tab"
+            type="button"
+            [class.survey-controls__tab--active]="currentStatus === 'past'"
+            [attr.aria-pressed]="currentStatus === 'past'"
+            (click)="selectSurveyStatus('past')"
+          >
+            Past survey
+          </button>
+
+        </div>
+
+        <div class="category-filter">
+
+          <button
+            class="category-filter__button"
+            type="button"
+            aria-haspopup="listbox"
+            [attr.aria-expanded]="categoryDropdownVisible"
+            (click)="switchCategoryDropdown($event)"
+          >
+
+            <span>Sort by categories</span>
+
+            <span
+              class="category-filter__arrow"
+              [class.category-filter__arrow--open]="categoryDropdownVisible"
+              aria-hidden="true"
+            >
+              ▾
             </span>
 
           </button>
 
-        } @empty {
+          @if (categoryDropdownVisible) {
 
-          <div class="survey-list__empty">
+            <div
+              class="category-filter__menu"
+              role="listbox"
+              aria-label="Survey categories"
+            >
 
-            <h3 class="survey-list__empty-title">
-              No surveys found
-            </h3>
+              @for (category of surveyCategories; track category) {
 
-            <p class="survey-list__empty-text">
-              There are currently no surveys for this selection.
-            </p>
+                <button
+                  class="category-filter__option"
+                  type="button"
+                  role="option"
+                  [class.category-filter__option--selected]="activeCategory === category"
+                  [attr.aria-selected]="activeCategory === category"
+                  (click)="selectSurveyCategory(category, $event)"
+                >
+                  {{ category }}
+                </button>
 
-          </div>
+              }
 
-        }
+            </div>
+
+          }
+
+          @if (activeCategory !== 'All Surveys') {
+
+            <button
+              class="category-filter__selected"
+              type="button"
+              (click)="clearSurveyCategory($event)"
+            >
+
+              <span>{{ activeCategory }}</span>
+
+              <span
+                class="category-filter__remove"
+                aria-hidden="true"
+              >
+                ×
+              </span>
+
+            </button>
+
+          }
+
+        </div>
 
       </div>
 
-    </div>
+      <div class="survey-list-wrapper">
 
-  </section>
+        <div
+          class="survey-list"
+          role="region"
+          aria-label="Available surveys"
+          tabindex="0"
+        >
 
-  @if (createSurveyVisible) {
-    <app-create-component
-      (closeCreate)="hideCreateSurvey()"
-      (surveyPublished)="hideCreateSurvey()"
-    ></app-create-component>
-  }
+          @for (survey of displayedSurveys; track survey.id) {
 
-  @if (selectedSurveyId !== null) {
-    <app-survey-detail
-      [surveyId]="selectedSurveyId.toString()"
-      (closeDetail)="closeSurveyDetails()"
-      (openCreate)="closeSurveyDetails(); showCreateSurvey()"
-    ></app-survey-detail>
-  }
+            <button
+              class="survey-list__card"
+              type="button"
+              (click)="showSurveyDetails(survey.id)"
+            >
 
-</main>
+              <span class="survey-list__category">
+                {{ survey.category }}
+              </span>
+
+              <span class="survey-list__content">
+
+                <span class="survey-list__name">
+                  {{ survey.title }}
+                </span>
+
+                <span class="survey-list__deadline">
+                  {{ survey.deadlineLabel }}
+                </span>
+
+              </span>
+
+            </button>
+
+          } @empty {
+
+            <div class="survey-list__empty">
+
+              <h3 class="survey-list__empty-title">
+                No surveys found
+              </h3>
+
+              <p class="survey-list__empty-text">
+                There are currently no surveys for this selection.
+              </p>
+
+            </div>
+
+          }
+
+        </div>
+
+      </div>
+
+    </section>
+
+    @if (createSurveyVisible) {
+      <app-create-component
+        (closeCreate)="hideCreateSurvey()"
+        (surveyPublished)="hideCreateSurvey()"
+      ></app-create-component>
+    }
+
+  </main>
+
+} @else {
+
+  <app-survey-detail
+    [surveyId]="selectedSurveyId"
+    (closeDetail)="closeSurveyDetails()"
+    (openCreate)="closeSurveyDetails(); showCreateSurvey()"
+  ></app-survey-detail>
+
+}

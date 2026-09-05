@@ -1,30 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-
-interface SurveyOption {
-  key: string;
-  text: string;
-  percentage: number;
-}
-
-interface SurveyQuestion {
-  id: number;
-  number: number;
-  text: string;
-  subtitle?: string;
-  options: SurveyOption[];
-}
-
-interface Survey {
-  id: string;
-  status: string;
-  endsOn: string;
-  category: string;
-  title: string;
-  description: string;
-  questions: SurveyQuestion[];
-}
-
+import {
+  SURVEY_DATA,
+  SurveyData,
+  SurveyQuestion
+}  from '../../core/data/survey-data';
 @Component({
   selector: 'app-survey-detail',
   standalone: true,
@@ -40,61 +20,7 @@ export class SurveyDetailComponent implements OnInit {
 
   @Output() openCreate = new EventEmitter<void>();
 
-  survey: Survey | null = {
-    id: '1',
-    status: 'Active',
-    endsOn: 'September 1, 2026',
-    category: 'Team Activities',
-    title: 'Let’s Plan the Next Team Event Together',
-    description: 'Help us decide what we should do for our next team event.',
-    questions: [
-      {
-        id: 1,
-        number: 1,
-        text: 'What type of event would you prefer?',
-        subtitle: 'Choose your favorite option.',
-        options: [
-          {
-            key: 'A',
-            text: 'Outdoor activity',
-            percentage: 45
-          },
-          {
-            key: 'B',
-            text: 'Dinner together',
-            percentage: 30
-          },
-          {
-            key: 'C',
-            text: 'Game night',
-            percentage: 25
-          }
-        ]
-      },
-      {
-        id: 2,
-        number: 2,
-        text: 'When would you prefer the event?',
-        options: [
-          {
-            key: 'A',
-            text: 'Friday',
-            percentage: 40
-          },
-          {
-            key: 'B',
-            text: 'Saturday',
-            percentage: 45
-          },
-          {
-            key: 'C',
-            text: 'Sunday',
-            percentage: 15
-          }
-        ]
-      }
-    ]
-  };
+  survey: SurveyData | null = null;
 
   selectedOptions: { [questionId: number]: string[] } = {};
 
@@ -111,16 +37,20 @@ export class SurveyDetailComponent implements OnInit {
   }
 
   loadSurvey(): void {
-    if (!this.survey) {
+    if (!this.surveyId) {
+      this.survey = null;
       return;
     }
 
-    if (this.surveyId) {
-      this.survey = {
-        ...this.survey,
-        id: this.surveyId
-      };
-    }
+    const foundSurvey = SURVEY_DATA.find(
+      survey => survey.id === this.surveyId
+    );
+
+    this.survey = foundSurvey ?? null;
+
+    this.selectedOptions = {};
+    this.isSubmitted = false;
+    this.submittedAttempted = false;
   }
 
   get titleParts(): {
@@ -170,7 +100,7 @@ export class SurveyDetailComponent implements OnInit {
       return false;
     }
 
-    return this.survey.status.toLowerCase() === 'ended';
+    return this.survey.status === 'Past';
   }
 
   get unansweredQuestions(): SurveyQuestion[] {
