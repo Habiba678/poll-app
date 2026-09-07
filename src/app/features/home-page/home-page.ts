@@ -11,7 +11,7 @@ interface Survey {
   id: string;
   category: string;
   title: string;
-  deadline: string;
+  deadline?: string;
   deadlineLabel: string;
   status: SurveyStatus;
 }
@@ -57,11 +57,15 @@ export class HomePage {
 
   get endingSoonSurveys(): Survey[] {
     return this.surveys
-      .filter(survey => survey.status === 'active')
+      .filter(
+        survey =>
+          survey.status === 'active' &&
+          survey.deadline
+      )
       .sort(
         (firstSurvey, secondSurvey) =>
-          this.convertDate(firstSurvey.deadline).getTime() -
-          this.convertDate(secondSurvey.deadline).getTime()
+          this.convertDate(firstSurvey.deadline!).getTime() -
+          this.convertDate(secondSurvey.deadline!).getTime()
       )
       .slice(0, 3);
   }
@@ -122,7 +126,10 @@ export class HomePage {
     this.selectedSurveyId = null;
   }
 
-  private getHomepageTitle(surveyId: string, originalTitle: string): string {
+  private getHomepageTitle(
+    surveyId: string,
+    originalTitle: string
+  ): string {
     if (surveyId === '1') {
       return 'Let’s Plan the Next Team Event Together';
     }

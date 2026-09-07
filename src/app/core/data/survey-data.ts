@@ -16,8 +16,9 @@ export interface SurveyData {
   id: string;
   title: string;
   category: string;
-  endsOn: string;
+  endsOn?: string;
   badge: string;
+  detailEndLabel: string;
   status: 'Published' | 'Past';
   isEndingSoon: boolean;
   description: string;
@@ -31,6 +32,7 @@ export const SURVEY_DATA: SurveyData[] = [
     category: 'Team Activities',
     endsOn: '01.09.2026',
     badge: 'Ends in 1 Day',
+    detailEndLabel: 'Ends in 1 Day',
     status: 'Published',
     isEndingSoon: true,
     description: 'Help us plan the next team event by sharing your preferences.',
@@ -137,6 +139,7 @@ export const SURVEY_DATA: SurveyData[] = [
     category: 'Health & Wellness',
     endsOn: '02.09.2026',
     badge: 'Ends in 2 Days',
+    detailEndLabel: 'Ends in 6 months',
     status: 'Published',
     isEndingSoon: true,
     description: 'Tell us about your fitness, health and wellness habits.',
@@ -231,6 +234,7 @@ export const SURVEY_DATA: SurveyData[] = [
     category: 'Gaming & Entertainment',
     endsOn: '03.09.2026',
     badge: 'Ends in 3 Days',
+    detailEndLabel: 'Ongoing',
     status: 'Published',
     isEndingSoon: true,
     description: 'Share your gaming habits and entertainment preferences.',
@@ -347,6 +351,7 @@ export const SURVEY_DATA: SurveyData[] = [
     category: 'Education & Learning',
     endsOn: '10.08.2026',
     badge: 'Ended',
+    detailEndLabel: 'Ended on 10.08.2026',
     status: 'Past',
     isEndingSoon: false,
     description: 'Share which learning methods and study habits work best for you.',
@@ -431,6 +436,7 @@ export const SURVEY_DATA: SurveyData[] = [
     category: 'Lifestyle & Preferences',
     endsOn: '12.08.2026',
     badge: 'Ended',
+    detailEndLabel: 'Ended on 12.08.2026',
     status: 'Past',
     isEndingSoon: false,
     description: 'Tell us about your everyday habits and personal preferences.',
@@ -525,6 +531,7 @@ export const SURVEY_DATA: SurveyData[] = [
     category: 'Technology & Innovation',
     endsOn: '14.08.2026',
     badge: 'Ended',
+    detailEndLabel: 'Ended on 14.08.2026',
     status: 'Past',
     isEndingSoon: false,
     description: 'Share how technology influences your everyday routines.',

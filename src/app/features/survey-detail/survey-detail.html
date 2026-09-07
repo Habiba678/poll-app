@@ -36,21 +36,21 @@
 
           <div class="survey-meta">
 
-            <span class="survey-status">
-              {{ survey.status }}
-            </span>
+            <div class="survey-meta-left">
 
-            <div class="survey-meta-information">
-
-              <span>
-                Ends on {{ survey.endsOn }}
+              <span class="survey-status">
+                Published
               </span>
 
-              <span>
-                Category:
-                <strong>{{ survey.category }}</strong>
+              <span class="survey-date">
+                {{ survey.detailEndLabel }}
               </span>
 
+            </div>
+
+            <div class="survey-category">
+              Category:
+              <strong>{{ survey.category }}</strong>
             </div>
 
           </div>
@@ -162,7 +162,6 @@
             @if (!isSubmitted && !isSurveyEnded) {
 
               <div class="answer-progress">
-
                 <span
                   [class.progress-ready]="allQuestionsAnswered"
                 >
@@ -171,7 +170,6 @@
                   {{ survey.questions.length }}
                   questions answered
                 </span>
-
               </div>
 
             }
