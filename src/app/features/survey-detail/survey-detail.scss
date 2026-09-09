@@ -262,24 +262,26 @@
   border: 1.8px solid #35273a;
   border-radius: 4px;
   background-color: transparent;
-  transition: all 0.15s ease;
-
-  img {
-    width: 10px;
-    height: auto;
-    opacity: 0;
-    visibility: hidden;
-  }
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
 }
 
 .checkbox-selected {
   border-color: #ffb770;
   background-color: #ffb770;
+}
 
-  img {
-    opacity: 1;
-    visibility: visible;
-  }
+.checkbox-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #35273a;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .answer-text {
@@ -292,18 +294,7 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 16px;
   margin-top: 40px;
-}
-
-.answer-progress {
-  color: #7b7785;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.progress-ready {
-  color: #2e7d32;
 }
 
 .complete-button {
@@ -578,11 +569,6 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-
-    img {
-      width: 14px;
-      height: auto;
-    }
   }
 
   .survey-popup {

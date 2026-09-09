@@ -39,7 +39,11 @@
             <div class="survey-meta-left">
 
               <span class="survey-status">
-                Published
+                {{
+                  isSurveyEnded
+                    ? 'Past'
+                    : 'Published'
+                }}
               </span>
 
               <span class="survey-date">
@@ -84,7 +88,8 @@
                 <div class="question-heading-row">
 
                   <h3 class="question-heading">
-                    {{ question.number }}. {{ question.text }}
+                    {{ question.number }}.
+                    {{ question.text }}
                   </h3>
 
                   @if (
@@ -116,32 +121,52 @@
 
                 <div class="answer-options">
 
-                  @for (option of question.options; track option.key) {
+                  @for (
+                    option of question.options;
+                    track option.key
+                  ) {
 
                     <label
                       class="answer-option"
                       [class.option-disabled]="
                         isSubmitted || isSurveyEnded
                       "
-                      (click)="toggleOption(question.id, option.key)"
+                      (click)="
+                        toggleOption(
+                          question.id,
+                          option.key
+                        )
+                      "
                     >
 
                       <div
                         class="answer-checkbox"
                         [class.checkbox-selected]="
-                          isSelected(question.id, option.key)
+                          isSelected(
+                            question.id,
+                            option.key
+                          )
                         "
                       >
 
-                        <img
-                          src="icons/check.svg"
-                          alt="check"
-                        >
+                        @if (
+                          isSelected(
+                            question.id,
+                            option.key
+                          )
+                        ) {
+                          <span class="checkbox-check">
+                            ✓
+                          </span>
+                        }
 
                       </div>
 
                       <span class="answer-text">
-                        <strong>{{ option.key }}.</strong>
+                        <strong>
+                          {{ option.key }}.
+                        </strong>
+
                         {{ option.text }}
                       </span>
 
@@ -158,21 +183,6 @@
           </div>
 
           <div class="survey-footer">
-
-            @if (!isSubmitted && !isSurveyEnded) {
-
-              <div class="answer-progress">
-                <span
-                  [class.progress-ready]="allQuestionsAnswered"
-                >
-                  {{ answeredQuestionsCount }}
-                  of
-                  {{ survey.questions.length }}
-                  questions answered
-                </span>
-              </div>
-
-            }
 
             <button
               class="complete-button"
@@ -202,10 +212,11 @@
                     : 'Complete'
                 }}
 
-                <img
-                  src="icons/check.svg"
-                  alt="check"
-                >
+                @if (isSubmitted || isSurveyEnded) {
+                  <span class="complete-check">
+                    ✓
+                  </span>
+                }
               </span>
 
             </button>
@@ -230,18 +241,23 @@
           <img
             src="icons/purple_arrow_drop.svg"
             alt="toggle results"
-            [class.results-arrow-rotated]="showResultsMobile"
+            [class.results-arrow-rotated]="
+              showResultsMobile
+            "
           >
 
         </button>
 
         <section
           class="survey-results"
-          [class.results-hidden-mobile]="!showResultsMobile"
+          [class.results-hidden-mobile]="
+            !showResultsMobile
+          "
         >
 
           <h2 class="results-heading">
             Survey results
+
             <span class="results-live">
               LIVE
             </span>
@@ -277,10 +293,14 @@
                         </span>
 
                         <div class="result-bar">
+
                           <div
                             class="result-bar-value"
-                            [style.width.%]="option.percentage"
+                            [style.width.%]="
+                              option.percentage
+                            "
                           ></div>
+
                         </div>
 
                         <span class="result-percentage">
@@ -302,14 +322,16 @@
           } @else {
 
             <div class="no-results">
+
               <p>
-                Results will be shown here after participants
-                complete the survey.
+                Results will be shown here after
+                participants complete the survey.
               </p>
 
               <p>
                 There are no answers yet.
               </p>
+
             </div>
 
           }
@@ -344,7 +366,9 @@
 
     @if (showMissingPopup) {
 
-      <div class="survey-popup missing-survey-popup">
+      <div
+        class="survey-popup missing-survey-popup"
+      >
 
         <img
           src="icons/close_btn_dark.svg"
@@ -354,6 +378,7 @@
         >
 
         <div class="popup-content">
+
           <strong>
             Answers missing!
           </strong>
@@ -362,6 +387,7 @@
             Please answer all questions<br>
             to complete the survey
           </span>
+
         </div>
 
       </div>
@@ -370,7 +396,9 @@
 
     @if (showAlreadyCompletedPopup) {
 
-      <div class="survey-popup missing-survey-popup">
+      <div
+        class="survey-popup missing-survey-popup"
+      >
 
         <img
           src="icons/close_btn_dark.svg"
