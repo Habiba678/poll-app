@@ -165,7 +165,7 @@
 
   &-label {
     color: #ffffff;
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 600;
   }
 
@@ -197,7 +197,7 @@
     background: #fefdfb;
     color: #35273a;
     font-family: "Mulish", sans-serif;
-    font-size: 16px;
+    font-size: 14px;
 
     &:focus {
       box-shadow: 0 0 0 2px #ffb770;
@@ -221,7 +221,7 @@
 
   &-error {
     color: #ffcfa1;
-    font-size: 16px;
+    font-size: 11px;
     font-weight: 500;
   }
 
@@ -314,7 +314,7 @@
       background: transparent;
       color: #35273a;
       font-family: "Mulish", sans-serif;
-      font-size: 16px;
+      font-size: 13px;
       cursor: pointer;
       text-align: left;
 
@@ -357,7 +357,7 @@
   &-title {
     margin: 0;
     color: #ffffff;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
   }
 
@@ -637,7 +637,7 @@
 
     &-status {
       padding: 3px 8px;
-      font-size: 16px;
+      font-size: 11px;
     }
 
     &-heading {
@@ -722,7 +722,7 @@
     }
 
     &-label {
-      font-size: 16px;
+      font-size: 13px;
     }
 
     &-footer {
@@ -776,7 +776,7 @@
     }
 
     &-title {
-      font-size: 16px;
+      font-size: 13px;
     }
   }
 
@@ -786,12 +786,12 @@
     }
 
     &-heading {
-      font-size: 16px;
+      font-size: 13px;
     }
   }
 
   .multiple-answer {
-    font-size: 16px;
+    font-size: 11px;
   }
 
   .add-question-area {
@@ -803,7 +803,7 @@
       min-width: 99px;
       min-height: 48px;
       padding: 10px 16px;
-      font-size: 16px;
+      font-size: 13px;
     }
 
     &-message {
@@ -829,7 +829,7 @@
     &-card {
       width: 100%;
       max-width: none;
-      min-height: 900px;
+      min-height: 0;
       border-radius: 5px 80px 5px 5px;
     }
   }
@@ -850,7 +850,7 @@
     &-card {
       width: 100%;
       max-width: none;
-      min-height: 1000px;
+      min-height: 900px;
       border-radius: 5px 80px 5px 5px;
     }
 
@@ -860,7 +860,7 @@
     }
 
     &-status {
-      font-size: 16px;
+      font-size: 12px;
     }
 
     &-heading {
@@ -881,38 +881,38 @@
     }
 
     &-label {
-      font-size: 16px;
+      font-size: 14px;
     }
 
     &-input,
     &-textarea {
-      font-size: 16px;
+      font-size: 14px;
     }
   }
 
   .category-select {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .question-title {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .answer-heading {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .multiple-answer {
-    font-size: 16px;
+    font-size: 12px;
   }
 
   .add-answer,
   .add-question {
-    font-size: 16px;
+    font-size: 13px;
   }
 
   .publish-survey {
-    font-size: 16px;
+    font-size: 14px;
   }
 }
 
@@ -927,7 +927,6 @@
         height: 49px;
       }
     }
-   
 
     &-header {
       padding-left: 12px;
@@ -950,7 +949,7 @@
     }
 
     &-label {
-      font-size: 16px;
+      font-size: 14px;
     }
 
     &-input,
@@ -960,27 +959,27 @@
   }
 
   .category-select {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .question-title {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .answer-heading {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .multiple-answer {
-    font-size: 16px;
+    font-size: 12px;
   }
 
   .add-answer,
   .add-question {
-    font-size: 16px;
+    font-size: 13px;
   }
 
   .publish-survey {
-    font-size: 16px;
+    font-size: 14px;
   }
 }
