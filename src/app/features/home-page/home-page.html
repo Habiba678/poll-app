@@ -45,7 +45,7 @@
 
           <img
             class="home-hero__button-icon"
-            src="/assets/icons/icon-add-circle-purple.svg"
+            src="/assets/icons/icon-add-circle.svg"
             alt=""
           />
         </button>
@@ -57,30 +57,6 @@
         <img
           class="home-hero__phone"
           src="/assets/img/Visual 3.svg"
-          alt=""
-        />
-
-        <img
-          class="home-hero__decoration home-hero__decoration--question"
-          src="/assets/icon/questin-mark.svg"
-          alt=""
-        />
-
-        <img
-          class="home-hero__decoration home-hero__decoration--message"
-          src="/assets/icon/typing-bubble.svg"
-          alt=""
-        />
-
-        <img
-          class="home-hero__decoration home-hero__decoration--star"
-          src="/assets/icon/star.svg"
-          alt=""
-        />
-
-        <img
-          class="home-hero__decoration home-hero__decoration--check"
-          src="/assets/icon/check.svg"
           alt=""
         />
 
@@ -302,13 +278,6 @@
 
     </section>
 
-    @if (createSurveyVisible) {
-      <app-create-component
-        (closeCreate)="hideCreateSurvey()"
-        (surveyPublished)="hideCreateSurvey()"
-      ></app-create-component>
-    }
-
   </main>
 
 } @else {
@@ -316,7 +285,14 @@
   <app-survey-detail
     [surveyId]="selectedSurveyId"
     (closeDetail)="closeSurveyDetails()"
-    (openCreate)="closeSurveyDetails(); showCreateSurvey()"
+    (openCreate)="showCreateSurvey()"
   ></app-survey-detail>
 
+}
+
+@if (createSurveyVisible) {
+  <app-create-component
+    (closeCreate)="hideCreateSurvey()"
+    (surveyPublished)="hideCreateSurvey()"
+  ></app-create-component>
 }

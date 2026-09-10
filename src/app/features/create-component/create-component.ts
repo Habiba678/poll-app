@@ -1,5 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, HostListener, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Output
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 interface CreateAnswer {
@@ -42,33 +47,17 @@ export class CreateComponent {
     'Gaming & Entertainment',
     'Education & Learning',
     'Lifestyle & Preferences',
-    'Technology & Innovation',
-    'Workplace Culture'
+    'Technology & Innovation'
   ];
 
   surveyQuestions: CreateQuestion[] = [
-    {
-      id: 1,
-      text: '',
-      multipleAnswers: false,
-      answers: [
-        {
-          key: 'A',
-          text: ''
-        },
-        {
-          key: 'B',
-          text: ''
-        }
-      ]
-    }
+    this.createEmptyQuestion(1)
   ];
 
   get minimumDate(): string {
     const today = new Date();
 
     const year = today.getFullYear();
-
     const month = String(
       today.getMonth() + 1
     ).padStart(2, '0');
@@ -112,50 +101,37 @@ export class CreateComponent {
     this.categoryMenuOpen = false;
   }
 
-  clearCategory(event: Event): void {
-    event.stopPropagation();
-
-    this.selectedCategory = '';
-    this.categoryMenuOpen = false;
-  }
-
   @HostListener('document:click')
   closeCategoryMenu(): void {
     this.categoryMenuOpen = false;
   }
 
   addQuestion(): void {
-    const newQuestionId =
-      this.surveyQuestions.length > 0
-        ? Math.max(
-            ...this.surveyQuestions.map(question => question.id)
-          ) + 1
-        : 1;
+    const nextId =
+      Math.max(
+        ...this.surveyQuestions.map(
+          question => question.id
+        )
+      ) + 1;
 
-    this.surveyQuestions.push({
-      id: newQuestionId,
-      text: '',
-      multipleAnswers: false,
-      answers: [
-        {
-          key: 'A',
-          text: ''
-        },
-        {
-          key: 'B',
-          text: ''
-        }
-      ]
-    });
+    this.surveyQuestions.push(
+      this.createEmptyQuestion(nextId)
+    );
   }
 
   deleteQuestion(questionIndex: number): void {
-    if (this.surveyQuestions.length === 1) {
-      this.clearQuestion(this.surveyQuestions[0]);
+    if (questionIndex === 0) {
+      this.clearQuestion(
+        this.surveyQuestions[0]
+      );
+
       return;
     }
 
-    this.surveyQuestions.splice(questionIndex, 1);
+    this.surveyQuestions.splice(
+      questionIndex,
+      1
+    );
   }
 
   addAnswer(question: CreateQuestion): void {
@@ -179,10 +155,14 @@ export class CreateComponent {
   ): void {
     if (question.answers.length <= 2) {
       question.answers[answerIndex].text = '';
+
       return;
     }
 
-    question.answers.splice(answerIndex, 1);
+    question.answers.splice(
+      answerIndex,
+      1
+    );
 
     this.updateAnswerLetters(question);
   }
@@ -195,15 +175,11 @@ export class CreateComponent {
     }
 
     this.publishMessageVisible = true;
-    this.surveyPublished.emit();
-
-    setTimeout(() => {
-      this.publishMessageVisible = false;
-    }, 6000);
   }
 
   closePublishMessage(): void {
     this.publishMessageVisible = false;
+    this.surveyPublished.emit();
   }
 
   private formIsComplete(): boolean {
@@ -237,7 +213,29 @@ export class CreateComponent {
     return true;
   }
 
-  private clearQuestion(question: CreateQuestion): void {
+  private createEmptyQuestion(
+    id: number
+  ): CreateQuestion {
+    return {
+      id,
+      text: '',
+      multipleAnswers: false,
+      answers: [
+        {
+          key: 'A',
+          text: ''
+        },
+        {
+          key: 'B',
+          text: ''
+        }
+      ]
+    };
+  }
+
+  private clearQuestion(
+    question: CreateQuestion
+  ): void {
     question.text = '';
     question.multipleAnswers = false;
 
@@ -258,7 +256,9 @@ export class CreateComponent {
   ): void {
     question.answers.forEach(
       (answer, index) => {
-        answer.key = String.fromCharCode(65 + index);
+        answer.key = String.fromCharCode(
+          65 + index
+        );
       }
     );
   }
