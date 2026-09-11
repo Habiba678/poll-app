@@ -1,4 +1,11 @@
-@if (selectedSurveyId === null) {
+@if (createSurveyVisible) {
+
+  <app-create-component
+    (closeCreate)="hideCreateSurvey()"
+    (surveyPublished)="hideCreateSurvey()"
+  ></app-create-component>
+
+} @else if (selectedSurveyId === null) {
 
   <main class="home-screen">
 
@@ -9,17 +16,22 @@
     }
 
     @if (surveyError) {
-      <p class="home-screen__message home-screen__message--error" role="alert">
+      <p
+        class="home-screen__message home-screen__message--error"
+        role="alert"
+      >
         {{ surveyError }}
       </p>
     }
 
     <header class="home-header">
+
       <img
         class="home-header__logo"
         src="/assets/icons/pollapp-logo.svg"
         alt="Poll App"
       />
+
     </header>
 
     <section class="home-hero">
@@ -41,13 +53,17 @@
           type="button"
           (click)="showCreateSurvey()"
         >
-          <span>New survey</span>
+
+          <span>
+            New survey
+          </span>
 
           <img
             class="home-hero__button-icon"
             src="/assets/icons/icon-add-circle.svg"
             alt=""
           />
+
         </button>
 
       </div>
@@ -157,7 +173,9 @@
             (click)="switchCategoryDropdown($event)"
           >
 
-            <span>Sort by categories</span>
+            <span>
+              Sort by categories
+            </span>
 
             <span
               class="category-filter__arrow"
@@ -204,7 +222,9 @@
               (click)="clearSurveyCategory($event)"
             >
 
-              <span>{{ activeCategory }}</span>
+              <span>
+                {{ activeCategory }}
+              </span>
 
               <span
                 class="category-filter__remove"
@@ -288,11 +308,4 @@
     (openCreate)="showCreateSurvey()"
   ></app-survey-detail>
 
-}
-
-@if (createSurveyVisible) {
-  <app-create-component
-    (closeCreate)="hideCreateSurvey()"
-    (surveyPublished)="hideCreateSurvey()"
-  ></app-create-component>
 }

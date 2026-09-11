@@ -105,6 +105,7 @@
 
                 @if (categoryMenuOpen) {
                   <div class="category-menu">
+
                     @for (
                       categoryItem of categoryOptions;
                       track categoryItem
@@ -118,6 +119,7 @@
                         {{ categoryItem }}
                       </button>
                     }
+
                   </div>
                 }
 
@@ -377,7 +379,12 @@
           (click)="publishSurvey()"
         >
           <span>Publish</span>
-          <span class="publish-survey__check">✓</span>
+
+          <img
+            class="publish-survey__check"
+            src="/assets/icons/icon-check.svg"
+            alt=""
+          >
         </button>
 
       </footer>

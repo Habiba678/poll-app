@@ -1,3 +1,10 @@
+:host {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
 .create {
   &-overlay {
     position: fixed;
@@ -15,6 +22,7 @@
     width: 100%;
     max-width: 1050px;
     min-width: 0;
+    box-sizing: border-box;
     font-family: "Mulish", sans-serif;
   }
 
@@ -24,6 +32,7 @@
 
   &-card {
     width: 100%;
+    min-width: 0;
     height: min(924px, calc(100vh - 64px));
     box-sizing: border-box;
     background: #35273a;
@@ -34,10 +43,12 @@
   }
 
   &-header {
-    flex-shrink: 0;
+    width: 100%;
+    min-width: 0;
     min-height: 118px;
     padding: 32px 54px 20px;
     box-sizing: border-box;
+    flex-shrink: 0;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -59,7 +70,7 @@
     border-radius: 0 8px 0 0;
     background: #ffcfa1;
     color: #35273a;
-    font-size: 12px;
+    font-size: 16px;
     font-weight: 700;
     line-height: 1.2;
   }
@@ -82,7 +93,7 @@
     background: rgba(255, 183, 112, 0.34);
     color: #ffffff;
     font-family: "Mulish", sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
     cursor: pointer;
     display: inline-flex;
@@ -98,6 +109,7 @@
 
   &-body-scroll {
     flex: 1;
+    min-width: 0;
     min-height: 0;
     margin: 0 54px;
     padding: 32px;
@@ -125,12 +137,17 @@
   &-form {
     width: 100%;
     min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
+    display: grid;
+    grid-template-columns:
+      minmax(0, 470px)
+      minmax(0, 470px);
+    column-gap: 64px;
+    row-gap: 40px;
   }
 
   &-info {
+    grid-column: 1 / -1;
+    width: 100%;
     min-width: 0;
     display: grid;
     grid-template-columns:
@@ -153,6 +170,7 @@
 
   &-field,
   &-category {
+    width: 100%;
     min-width: 0;
     display: flex;
     flex-direction: column;
@@ -165,7 +183,7 @@
 
   &-label {
     color: #ffffff;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 600;
   }
 
@@ -175,6 +193,7 @@
 
   &-input-row,
   &-textarea-row {
+    width: 100%;
     min-width: 0;
     display: flex;
     align-items: center;
@@ -197,7 +216,7 @@
     background: #fefdfb;
     color: #35273a;
     font-family: "Mulish", sans-serif;
-    font-size: 14px;
+    font-size: 16px;
 
     &:focus {
       box-shadow: 0 0 0 2px #ffb770;
@@ -221,15 +240,17 @@
 
   &-error {
     color: #ffcfa1;
-    font-size: 11px;
+    font-size: 16px;
     font-weight: 500;
   }
 
   &-footer {
-    flex-shrink: 0;
+    width: 100%;
+    min-width: 0;
     min-height: 88px;
     padding: 20px 54px 28px;
     box-sizing: border-box;
+    flex-shrink: 0;
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -262,6 +283,7 @@
 .category {
   &-select {
     width: 100%;
+    min-width: 0;
     height: 37px;
     padding: 0 10px;
     box-sizing: border-box;
@@ -270,7 +292,7 @@
     background: transparent;
     color: #ffffff;
     font-family: "Mulish", sans-serif;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 600;
     cursor: pointer;
     display: flex;
@@ -310,11 +332,12 @@
     &__item {
       width: 100%;
       padding: 7px 10px;
+      box-sizing: border-box;
       border: 0;
       background: transparent;
       color: #35273a;
       font-family: "Mulish", sans-serif;
-      font-size: 13px;
+      font-size: 16px;
       cursor: pointer;
       text-align: left;
 
@@ -332,15 +355,16 @@
 
 .question {
   &-area {
+    grid-column: 1;
+    width: 100%;
     min-width: 0;
-    display: grid;
-    grid-template-columns:
-      repeat(2, minmax(0, 470px));
-    gap: 40px 64px;
-    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
   }
 
   &-block {
+    width: 100%;
     min-width: 0;
     display: flex;
     flex-direction: column;
@@ -348,6 +372,8 @@
   }
 
   &-header {
+    width: 100%;
+    min-width: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -357,11 +383,12 @@
   &-title {
     margin: 0;
     color: #ffffff;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
   }
 
   &-field {
+    width: 100%;
     min-width: 0;
     display: flex;
     flex-direction: column;
@@ -371,6 +398,8 @@
 
 .answer {
   &-header {
+    width: 100%;
+    min-width: 0;
     margin-top: 4px;
     display: flex;
     justify-content: space-between;
@@ -380,17 +409,20 @@
 
   &-heading {
     color: #ffffff;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700;
   }
 
   &-list {
+    width: 100%;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 7px;
   }
 
   &-item {
+    width: 100%;
     min-width: 0;
     display: flex;
     align-items: flex-start;
@@ -402,7 +434,7 @@
     padding-top: 9px;
     flex-shrink: 0;
     color: #ffffff;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700;
   }
 
@@ -415,13 +447,14 @@
   }
 
   &-delete {
+    flex-shrink: 0;
     margin-top: 5px;
   }
 }
 
 .multiple-answer {
   color: #ffffff;
-  font-size: 12px;
+  font-size: 16px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -446,7 +479,7 @@
     background: transparent;
     color: #ffffff;
     font-family: "Mulish", sans-serif;
-    font-size: 12px;
+    font-size: 16px;
     font-weight: 600;
     cursor: pointer;
     display: inline-flex;
@@ -460,23 +493,34 @@
   }
 
   &-question-area {
+    grid-column: 2;
+    align-self: start;
+    width: 100%;
+    min-width: 0;
+    padding-top: 8px;
+    box-sizing: border-box;
     display: flex;
     justify-content: flex-start;
   }
 
   &-question {
+    width: 204px;
+    max-width: 100%;
+    height: 40px;
     padding: 8px 12px;
+    box-sizing: border-box;
     border: 0;
     border-radius: 10px;
-    background: rgba(255, 183, 112, 0.32);
+    background: rgba(255, 183, 112, 0.3);
     color: #ffffff;
     font-family: "Mulish", sans-serif;
-    font-size: 12px;
+    font-size: 16px;
     font-weight: 600;
     cursor: pointer;
     display: inline-flex;
+    justify-content: center;
     align-items: center;
-    gap: 7px;
+    gap: 10px;
 
     img {
       width: 17px;
@@ -487,26 +531,45 @@
 
 .publish {
   &-survey {
+    width: 99px;
+    height: 48px;
     min-width: 99px;
     min-height: 48px;
-    padding: 10px 16px;
+    padding: 0 12px;
+    box-sizing: border-box;
     border: 0;
     border-radius: 10px;
     background: #ffcfa1;
     color: #35273a;
     font-family: "Mulish", sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
     cursor: pointer;
     display: inline-flex;
     justify-content: center;
     align-items: center;
     gap: 8px;
+    transition:
+      width 0.25s ease,
+      min-width 0.25s ease,
+      background-color 0.25s ease;
 
     &__check {
-      font-size: 16px;
-      font-weight: 700;
-      line-height: 1;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      object-fit: contain;
+      display: none;
+    }
+
+    &:hover {
+      width: 127px;
+      min-width: 127px;
+      background: #ffb770;
+
+      .publish-survey__check {
+        display: block;
+      }
     }
   }
 
@@ -516,6 +579,7 @@
     bottom: 40px;
     z-index: 1100;
     width: 357px;
+    max-width: calc(100% - 32px);
     min-height: 86px;
     padding: 20px 55px 20px 24px;
     box-sizing: border-box;
@@ -539,6 +603,7 @@
       img {
         width: 24px;
         height: 24px;
+        display: block;
       }
     }
 
@@ -570,9 +635,9 @@
       padding: 30px 24px;
     }
 
+    &-form,
     &-info {
       grid-template-columns: 1fr;
-      gap: 32px;
     }
 
     &-footer {
@@ -580,26 +645,34 @@
     }
   }
 
-  .question-area {
-    grid-template-columns: 1fr;
-    gap: 32px;
+  .question-area,
+  .add-question-area {
+    grid-column: 1;
   }
 }
 
 @media (max-width: 668px) {
   .create {
     &-overlay {
+      position: static;
+      width: 100%;
+      min-width: 0;
+      min-height: 100vh;
       padding: 0;
-      align-items: flex-start;
+      box-sizing: border-box;
       background: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
     }
 
     &-panel {
       width: 100%;
-      max-width: 768px;
+      max-width: 668px;
       min-width: 0;
       min-height: 100vh;
       margin: 0 auto;
+      box-sizing: border-box;
       background: #ffffff;
       display: flex;
       flex-direction: column;
@@ -613,6 +686,7 @@
       box-sizing: border-box;
       display: flex;
       align-items: flex-start;
+      flex-shrink: 0;
       background: #ffffff;
 
       img {
@@ -623,21 +697,24 @@
       }
     }
 
+    &-card {
+      width: 100%;
+      min-width: 0;
+      height: auto;
+      min-height: 0;
+      flex: none;
+      margin-bottom: 40px;
+      border-radius: 5px 80px 5px 5px;
+    }
+
     &-header {
       position: relative;
-      width: 100%;
       min-height: 136px;
       padding: 40px 16px 16px;
-      box-sizing: border-box;
 
       &__left {
         gap: 10px;
       }
-    }
-
-    &-status {
-      padding: 3px 8px;
-      font-size: 11px;
     }
 
     &-heading {
@@ -659,28 +736,25 @@
       &__text {
         display: none;
       }
-
-      &__icon {
-        width: 18px;
-        height: 18px;
-      }
     }
 
     &-body-scroll {
       flex: 1;
       width: calc(100% - 24px);
+      min-width: 0;
+      min-height: 0;
       margin: 0 12px;
       padding: 40px 16px;
-      box-sizing: border-box;
       border-radius: 5px 80px 5px 5px;
     }
 
     &-form {
+      display: flex;
+      flex-direction: column;
       gap: 40px;
     }
 
     &-info {
-      width: 100%;
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -688,6 +762,7 @@
       &__left,
       &__right {
         width: 100%;
+        min-width: 0;
       }
 
       &__left {
@@ -695,50 +770,16 @@
       }
     }
 
-    &-field,
-    &-category {
-      width: 100%;
-    }
-
     &-input-row,
     &-textarea-row {
-      width: 100%;
       position: relative;
       display: block;
-    }
-
-    &-input,
-    &-textarea {
-      width: 100%;
-      font-size: 13px;
-    }
-
-    &-input {
-      height: 37px;
-    }
-
-    &-textarea {
-      height: 108px;
-    }
-
-    &-label {
-      font-size: 13px;
     }
 
     &-footer {
       min-height: 88px;
       padding: 20px 16px 28px;
       justify-content: center;
-    }
-  }
-
-  .icon-button {
-    width: 24px;
-    height: 24px;
-
-    img {
-      width: 18px;
-      height: 18px;
     }
   }
 
@@ -749,61 +790,42 @@
     right: 0;
   }
 
-  .category {
-    &-select {
-      width: 100%;
-      height: 37px;
-      padding-left: 0;
-      padding-right: 4px;
-      font-size: 13px;
-    }
-
-    &-menu {
-      width: 100%;
-    }
+  .category-select {
+    padding-left: 0;
+    padding-right: 4px;
   }
 
-  .question {
-    &-area {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-    }
-
-    &-block {
-      width: 100%;
-    }
-
-    &-title {
-      font-size: 13px;
-    }
-  }
-
-  .answer {
-    &-header {
-      align-items: center;
-    }
-
-    &-heading {
-      font-size: 13px;
-    }
-  }
-
-  .multiple-answer {
-    font-size: 11px;
+  .question-area {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
   }
 
   .add-question-area {
+    width: 100%;
+    padding-top: 0;
     justify-content: center;
   }
 
   .publish {
     &-survey {
-      min-width: 99px;
-      min-height: 48px;
-      padding: 10px 16px;
-      font-size: 13px;
+      width: 127px;
+      min-width: 127px;
+      background: #ffb770;
+
+      &__check {
+        display: block;
+      }
+
+      &:hover {
+        width: 127px;
+        min-width: 127px;
+        background: #ffb770;
+
+        .publish-survey__check {
+          display: block;
+        }
+      }
     }
 
     &-message {
@@ -816,22 +838,9 @@
 }
 
 @media (min-width: 431px) and (max-width: 668px) {
-  .create {
-    &-mobile-logo {
-      height: 110px;
-      padding: 28px 16px 12px;
-    }
-  }
-}
-
-@media (max-width: 430px) {
-  .create {
-    &-card {
-      width: 100%;
-      max-width: none;
-      min-height: 0;
-      border-radius: 5px 80px 5px 5px;
-    }
+  .create-mobile-logo {
+    height: 110px;
+    padding: 28px 16px 12px;
   }
 }
 
@@ -848,10 +857,7 @@
     }
 
     &-card {
-      width: 100%;
-      max-width: none;
       min-height: 900px;
-      border-radius: 5px 80px 5px 5px;
     }
 
     &-header {
@@ -859,13 +865,8 @@
       padding-right: 14px;
     }
 
-    &-status {
-      font-size: 12px;
-    }
-
     &-heading {
       max-width: 220px;
-      font-size: 40px;
     }
 
     &-cancel {
@@ -879,52 +880,17 @@
       padding-left: 10px;
       padding-right: 10px;
     }
-
-    &-label {
-      font-size: 14px;
-    }
-
-    &-input,
-    &-textarea {
-      font-size: 14px;
-    }
-  }
-
-  .category-select {
-    font-size: 14px;
-  }
-
-  .question-title {
-    font-size: 14px;
-  }
-
-  .answer-heading {
-    font-size: 14px;
-  }
-
-  .multiple-answer {
-    font-size: 12px;
-  }
-
-  .add-answer,
-  .add-question {
-    font-size: 13px;
-  }
-
-  .publish-survey {
-    font-size: 14px;
   }
 }
 
 @media (max-width: 320px) {
   .create {
     &-mobile-logo {
-      height: 200px;
-      padding: 48px 10px 16px;
+      padding-left: 10px;
+      padding-right: 10px;
 
       img {
         width: 109px;
-        height: 49px;
       }
     }
 
@@ -947,39 +913,5 @@
       margin-left: 6px;
       margin-right: 6px;
     }
-
-    &-label {
-      font-size: 14px;
-    }
-
-    &-input,
-    &-textarea {
-      font-size: 14px;
-    }
-  }
-
-  .category-select {
-    font-size: 14px;
-  }
-
-  .question-title {
-    font-size: 14px;
-  }
-
-  .answer-heading {
-    font-size: 14px;
-  }
-
-  .multiple-answer {
-    font-size: 12px;
-  }
-
-  .add-answer,
-  .add-question {
-    font-size: 13px;
-  }
-
-  .publish-survey {
-    font-size: 14px;
   }
 }

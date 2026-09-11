@@ -40,6 +40,7 @@ export class CreateComponent {
 
   publishAttempted = false;
   publishMessageVisible = false;
+  publishClicked = false;
 
   categoryOptions: string[] = [
     'Team Activities',
@@ -58,6 +59,7 @@ export class CreateComponent {
     const today = new Date();
 
     const year = today.getFullYear();
+
     const month = String(
       today.getMonth() + 1
     ).padStart(2, '0');
@@ -171,9 +173,11 @@ export class CreateComponent {
     this.publishAttempted = true;
 
     if (!this.formIsComplete()) {
+      this.publishClicked = false;
       return;
     }
 
+    this.publishClicked = true;
     this.publishMessageVisible = true;
   }
 
