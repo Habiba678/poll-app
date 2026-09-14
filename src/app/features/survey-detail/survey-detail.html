@@ -1,6 +1,7 @@
 <div class="survey-detail-page">
 
   <header class="detail-header">
+
     <a
       class="detail-logo-link"
       (click)="closeSurveyDetail()"
@@ -12,18 +13,23 @@
       >
     </a>
 
-    <button
-      class="create-survey-button"
-      (click)="openCreateFromHeader()"
-    >
-      <span>Create survey</span>
+    <div class="detail-header-actions">
 
-      <img
-        src="/assets/icons/icon-add-circle.svg"
-        alt=""
-        class="create-survey-icon"
+      <button
+        class="create-survey-button"
+        (click)="openCreateFromHeader()"
       >
-    </button>
+        <span>Create survey</span>
+
+        <img
+          src="/assets/icons/icon-add-circle.svg"
+          alt=""
+          class="create-survey-icon"
+        >
+      </button>
+
+    </div>
+
   </header>
 
   <main class="detail-content">
@@ -33,6 +39,18 @@
       <div class="detail-layout">
 
         <section class="survey-information-card">
+
+          <button
+            class="detail-close-button"
+            type="button"
+            (click)="closeSurveyDetail()"
+            aria-label="Close survey"
+          >
+            <img
+              src="assets/icons/close.svg"
+              alt="close"
+            >
+          </button>
 
           <div class="survey-meta">
 
@@ -98,7 +116,12 @@
                     !isSubmitted
                   ) {
                     <span class="question-answered">
-                      ✓ Answered
+                      <img
+                        src="/assets/icons/icon-check.svg"
+                        alt=""
+                        class="answered-check-icon"
+                      >
+                      Answered
                     </span>
                   }
 
@@ -155,9 +178,11 @@
                             option.key
                           )
                         ) {
-                          <span class="checkbox-check">
-                            ✓
-                          </span>
+                          <img
+                            src="/assets/icons/icon-check.svg"
+                            alt=""
+                            class="checkbox-check-icon"
+                          >
                         }
 
                       </div>
@@ -206,17 +231,21 @@
               </span>
 
               <span class="complete-mobile">
-                {{
-                  isSubmitted || isSurveyEnded
-                    ? 'Completed'
-                    : 'Complete'
-                }}
 
-                @if (isSubmitted || isSurveyEnded) {
-                  <span class="complete-check">
-                    ✓
-                  </span>
-                }
+                <span>
+                  {{
+                    isSubmitted || isSurveyEnded
+                      ? 'Completed'
+                      : 'Complete'
+                  }}
+                </span>
+
+                <img
+                  src="assets/icons/icon-check.svg"
+                  alt=""
+                  class="complete-check-icon"
+                >
+
               </span>
 
             </button>
@@ -239,7 +268,7 @@
           </span>
 
           <img
-            src="icons/purple_arrow_drop.svg"
+            src="assets/icons/arrow_drop_down.svg"
             alt="toggle results"
             [class.results-arrow-rotated]="
               showResultsMobile
@@ -347,7 +376,7 @@
       <div class="survey-popup">
 
         <img
-          src="icons/close_btn_dark.svg"
+          src="assets/icons/icon-close-btn-dark.svg"
           alt="close"
           class="popup-close"
           (click)="closeCompletePopup()"
@@ -366,12 +395,10 @@
 
     @if (showMissingPopup) {
 
-      <div
-        class="survey-popup missing-survey-popup"
-      >
+      <div class="survey-popup missing-survey-popup">
 
         <img
-          src="icons/close_btn_dark.svg"
+          src="assets/icons/icon-close-btn-dark.svg"
           alt="close"
           class="popup-close"
           (click)="closeMissingPopup()"
@@ -396,12 +423,10 @@
 
     @if (showAlreadyCompletedPopup) {
 
-      <div
-        class="survey-popup missing-survey-popup"
-      >
+      <div class="survey-popup missing-survey-popup">
 
         <img
-          src="icons/close_btn_dark.svg"
+          src="assets/icons/icon-close-btn-dark.svg"
           alt="close"
           class="popup-close"
           (click)="closeAlreadyCompletedPopup()"
