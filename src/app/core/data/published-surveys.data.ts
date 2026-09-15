@@ -2,6 +2,9 @@ import { SurveyData } from '../models/survey.model';
 
 /**
  * Contains all currently published surveys.
+ *
+ * These surveys are used as the initial published survey data
+ * throughout the application.
  */
 export const PUBLISHED_SURVEYS: SurveyData[] = [
   {
@@ -13,7 +16,8 @@ export const PUBLISHED_SURVEYS: SurveyData[] = [
     detailEndLabel: 'Ends in 1 Day',
     status: 'Published',
     isEndingSoon: true,
-    description: 'Help us plan the next team event by sharing your preferences.',
+    description:
+      'Help us plan the next team event by sharing your preferences.',
     questions: [
       {
         id: 1,
@@ -120,7 +124,8 @@ export const PUBLISHED_SURVEYS: SurveyData[] = [
     detailEndLabel: 'Ends in 6 months',
     status: 'Published',
     isEndingSoon: true,
-    description: 'Tell us about your fitness, health and wellness habits.',
+    description:
+      'Tell us about your fitness, health and wellness habits.',
     questions: [
       {
         id: 1,
@@ -215,7 +220,8 @@ export const PUBLISHED_SURVEYS: SurveyData[] = [
     detailEndLabel: 'Ongoing',
     status: 'Published',
     isEndingSoon: true,
-    description: 'Share your gaming habits and entertainment preferences.',
+    description:
+      'Share your gaming habits and entertainment preferences.',
     questions: [
       {
         id: 1,
