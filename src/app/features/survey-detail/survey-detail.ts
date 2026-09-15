@@ -15,6 +15,13 @@ import {
   SurveyQuestion
 } from '../../core/models/survey.model';
 
+/**
+ * Displays the detail view of a selected survey.
+ *
+ * The component handles answer selection, validation,
+ * survey completion, result visibility and restrictions
+ * for surveys that have already ended.
+ */
 @Component({
   selector: 'app-survey-detail',
   standalone: true,
@@ -24,13 +31,29 @@ import {
 })
 export class SurveyDetailComponent implements OnInit {
 
+  /**
+   * Identifier of the survey that should be displayed.
+   */
   @Input() surveyId: string | null = null;
 
+  /**
+   * Emits when the survey detail view should be closed.
+   */
   @Output() closeDetail = new EventEmitter<void>();
+
+  /**
+   * Emits when the create-survey view should be opened.
+   */
   @Output() openCreate = new EventEmitter<void>();
 
+  /**
+   * Currently displayed survey.
+   */
   survey: SurveyData | null = null;
 
+  /**
+   * Stores the selected answer keys for each question.
+   */
   selectedOptions: {
     [questionId: number]: string[];
   } = {};
@@ -51,7 +74,8 @@ export class SurveyDetailComponent implements OnInit {
   }
 
   /**
-   * Loads the survey that matches the selected survey ID.
+   * Loads the survey that matches the selected survey ID
+   * and resets the current answer state.
    */
   loadSurvey(): void {
     if (!this.surveyId) {
@@ -71,7 +95,10 @@ export class SurveyDetailComponent implements OnInit {
   }
 
   /**
-   * Splits the survey title for the styled headline.
+   * Splits the survey title into separate parts used
+   * by the styled headline.
+   *
+   * @returns The separated title information.
    */
   get titleParts(): {
     prefix: string;
@@ -106,7 +133,10 @@ export class SurveyDetailComponent implements OnInit {
   }
 
   /**
-   * Checks whether the current survey already has results.
+   * Checks whether the current survey contains
+   * result percentages.
+   *
+   * @returns True when at least one answer has results.
    */
   get hasResults(): boolean {
     if (!this.survey) {
@@ -121,7 +151,9 @@ export class SurveyDetailComponent implements OnInit {
   }
 
   /**
-   * Checks whether the selected survey has ended.
+   * Checks whether the selected survey has already ended.
+   *
+   * @returns True when the survey has the Past status.
    */
   get isSurveyEnded(): boolean {
     if (!this.survey) {
@@ -133,6 +165,8 @@ export class SurveyDetailComponent implements OnInit {
 
   /**
    * Returns all questions that have not been answered yet.
+   *
+   * @returns Questions without a selected answer.
    */
   get unansweredQuestions(): SurveyQuestion[] {
     if (!this.survey) {
@@ -146,7 +180,9 @@ export class SurveyDetailComponent implements OnInit {
   }
 
   /**
-   * Checks whether every survey question has an answer.
+   * Checks whether every question has at least one answer.
+   *
+   * @returns True when all questions have been answered.
    */
   get allQuestionsAnswered(): boolean {
     if (!this.survey) {
@@ -162,8 +198,8 @@ export class SurveyDetailComponent implements OnInit {
   /**
    * Checks whether an answer option is currently selected.
    *
-   * @param questionId The ID of the question.
-   * @param optionKey The key of the answer option.
+   * @param questionId Identifier of the question.
+   * @param optionKey Key of the answer option.
    * @returns True when the option is selected.
    */
   isSelected(
@@ -179,8 +215,11 @@ export class SurveyDetailComponent implements OnInit {
   /**
    * Selects or removes an answer option.
    *
-   * @param questionId The ID of the question.
-   * @param optionKey The selected answer option.
+   * Answers cannot be changed after submission or
+   * when the selected survey has already ended.
+   *
+   * @param questionId Identifier of the question.
+   * @param optionKey Key of the selected answer option.
    */
   toggleOption(
     questionId: number,
@@ -214,7 +253,11 @@ export class SurveyDetailComponent implements OnInit {
   }
 
   /**
-   * Completes the survey after all questions were answered.
+   * Completes the survey when every question
+   * has been answered.
+   *
+   * Submission is prevented for surveys that have
+   * already ended or were already submitted.
    */
   completeSurvey(): void {
     if (this.isSubmitted || this.isSurveyEnded) {
@@ -237,7 +280,8 @@ export class SurveyDetailComponent implements OnInit {
   }
 
   /**
-   * Shows the validation message for missing answers.
+   * Displays the validation popup when one or more
+   * questions have not been answered.
    */
   private showValidationError(): void {
     this.submittedAttempted = true;
@@ -249,28 +293,29 @@ export class SurveyDetailComponent implements OnInit {
   }
 
   /**
-   * Closes the missing answers popup.
+   * Closes the missing-answer validation popup.
    */
   closeMissingPopup(): void {
     this.showMissingPopup = false;
   }
 
   /**
-   * Closes the completed survey popup.
+   * Closes the successful completion popup.
    */
   closeCompletePopup(): void {
     this.showCompletePopup = false;
   }
 
   /**
-   * Closes the already completed popup.
+   * Closes the popup indicating that the survey
+   * was already completed.
    */
   closeAlreadyCompletedPopup(): void {
     this.showAlreadyCompletedPopup = false;
   }
 
   /**
-   * Opens or closes the mobile results section.
+   * Opens or closes the results section on mobile devices.
    */
   toggleResultsMobile(): void {
     this.showResultsMobile =
@@ -278,14 +323,16 @@ export class SurveyDetailComponent implements OnInit {
   }
 
   /**
-   * Opens the create survey screen.
+   * Requests the create-survey view from the
+   * parent component.
    */
   openCreateFromHeader(): void {
     this.openCreate.emit();
   }
 
   /**
-   * Closes the current survey detail screen.
+   * Requests that the current survey detail view
+   * is closed.
    */
   closeSurveyDetail(): void {
     this.closeDetail.emit();
