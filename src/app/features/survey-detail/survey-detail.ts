@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+
 import {
   Component,
   EventEmitter,
@@ -7,11 +8,12 @@ import {
   Output
 } from '@angular/core';
 
+import { SURVEY_DATA } from '../../core/data/survey-data';
+
 import {
-  SURVEY_DATA,
   SurveyData,
   SurveyQuestion
-} from '../../core/data/survey-data';
+} from '../../core/models/survey.model';
 
 @Component({
   selector: 'app-survey-detail',
