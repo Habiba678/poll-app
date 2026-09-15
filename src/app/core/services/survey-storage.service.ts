@@ -1,12 +1,29 @@
 import { Injectable } from '@angular/core';
-import { SupabaseConnectionService } from './supabase.service';
 
+import {
+  SupabaseConnectionService
+} from './supabase.service';
+
+/**
+ * Handles storage operations for surveys in Supabase.
+ *
+ * The service is responsible for loading, creating
+ * and deleting surveys in the database.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class SurveyStorageService {
+
+  /**
+   * Creates the storage service with access to
+   * the shared Supabase connection.
+   *
+   * @param supabaseService Provides the Supabase client.
+   */
   constructor(
-    private readonly supabaseService: SupabaseConnectionService
+    private readonly supabaseService:
+      SupabaseConnectionService
   ) {}
 
   /**
@@ -15,7 +32,8 @@ export class SurveyStorageService {
    * @returns All stored surveys.
    */
   async loadSurveys() {
-    const client = this.supabaseService.getClient();
+    const client =
+      this.supabaseService.getClient();
 
     return client
       .from('surveys')
@@ -23,13 +41,14 @@ export class SurveyStorageService {
   }
 
   /**
-   * Loads one survey by its ID.
+   * Loads one survey by its identifier.
    *
-   * @param surveyId The ID of the survey.
+   * @param surveyId Identifier of the survey.
    * @returns The matching survey.
    */
   async loadSurveyById(surveyId: string) {
-    const client = this.supabaseService.getClient();
+    const client =
+      this.supabaseService.getClient();
 
     return client
       .from('surveys')
@@ -41,11 +60,12 @@ export class SurveyStorageService {
   /**
    * Saves a new survey in the database.
    *
-   * @param survey The survey data that should be stored.
-   * @returns The created survey.
+   * @param survey Survey data that should be stored.
+   * @returns The newly created survey.
    */
   async saveSurvey(survey: object) {
-    const client = this.supabaseService.getClient();
+    const client =
+      this.supabaseService.getClient();
 
     return client
       .from('surveys')
@@ -57,10 +77,12 @@ export class SurveyStorageService {
   /**
    * Deletes a survey from the database.
    *
-   * @param surveyId The ID of the survey.
+   * @param surveyId Identifier of the survey.
+   * @returns The result of the delete operation.
    */
   async deleteSurvey(surveyId: string) {
-    const client = this.supabaseService.getClient();
+    const client =
+      this.supabaseService.getClient();
 
     return client
       .from('surveys')

@@ -1,20 +1,37 @@
 import { Injectable } from '@angular/core';
-import { SupabaseConnectionService } from './supabase.service';
 
+import {
+  SupabaseConnectionService
+} from './supabase.service';
+
+/**
+ * Handles survey response operations with Supabase.
+ *
+ * The service stores, loads and deletes responses
+ * submitted for survey questions.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class SurveyResponseService {
+
+  /**
+   * Creates the response service with access to
+   * the shared Supabase connection.
+   *
+   * @param supabaseService Provides the Supabase client.
+   */
   constructor(
-    private readonly supabaseService: SupabaseConnectionService
+    private readonly supabaseService:
+      SupabaseConnectionService
   ) {}
 
   /**
-   * Saves a response for a survey question.
+   * Saves selected answers for a survey question.
    *
-   * @param surveyId The ID of the survey.
-   * @param questionId The ID of the question.
-   * @param selectedOptions The selected answer options.
+   * @param surveyId Identifier of the survey.
+   * @param questionId Identifier of the question.
+   * @param selectedOptions Selected answer option keys.
    * @returns The stored response.
    */
   async saveResponse(
@@ -22,7 +39,8 @@ export class SurveyResponseService {
     questionId: number,
     selectedOptions: string[]
   ) {
-    const client = this.supabaseService.getClient();
+    const client =
+      this.supabaseService.getClient();
 
     return client
       .from('survey_responses')
@@ -36,13 +54,14 @@ export class SurveyResponseService {
   }
 
   /**
-   * Loads all responses for one survey.
+   * Loads all responses belonging to one survey.
    *
-   * @param surveyId The ID of the survey.
+   * @param surveyId Identifier of the survey.
    * @returns All responses belonging to the survey.
    */
   async loadResponses(surveyId: string) {
-    const client = this.supabaseService.getClient();
+    const client =
+      this.supabaseService.getClient();
 
     return client
       .from('survey_responses')
@@ -51,17 +70,19 @@ export class SurveyResponseService {
   }
 
   /**
-   * Loads all responses for one question.
+   * Loads all responses belonging to one question
+   * of a survey.
    *
-   * @param surveyId The ID of the survey.
-   * @param questionId The ID of the question.
+   * @param surveyId Identifier of the survey.
+   * @param questionId Identifier of the question.
    * @returns All responses for the selected question.
    */
   async loadQuestionResponses(
     surveyId: string,
     questionId: number
   ) {
-    const client = this.supabaseService.getClient();
+    const client =
+      this.supabaseService.getClient();
 
     return client
       .from('survey_responses')
@@ -73,10 +94,14 @@ export class SurveyResponseService {
   /**
    * Deletes all responses belonging to a survey.
    *
-   * @param surveyId The ID of the survey.
+   * @param surveyId Identifier of the survey.
+   * @returns The result of the delete operation.
    */
-  async deleteSurveyResponses(surveyId: string) {
-    const client = this.supabaseService.getClient();
+  async deleteSurveyResponses(
+    surveyId: string
+  ) {
+    const client =
+      this.supabaseService.getClient();
 
     return client
       .from('survey_responses')
