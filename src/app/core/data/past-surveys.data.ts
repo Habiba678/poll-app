@@ -1,7 +1,10 @@
 import { SurveyData } from '../models/survey.model';
 
 /**
- * Contains all surveys that have already ended.
+ * Contains additional survey data used by the application.
+ *
+ * The collection includes published surveys as well as
+ * a past survey used for the completed-survey view.
  */
 export const PAST_SURVEYS: SurveyData[] = [
   {
@@ -9,9 +12,9 @@ export const PAST_SURVEYS: SurveyData[] = [
     title: 'Discover Your Learning Style',
     category: 'Education & Learning',
     endsOn: '10.08.2026',
-    badge: 'Ended',
-    detailEndLabel: 'Ended on 10.08.2026',
-    status: 'Past',
+    badge: 'Ongoing',
+    detailEndLabel: 'Ongoing',
+    status: 'Published',
     isEndingSoon: false,
     description: 'Share which learning methods and study habits work best for you.',
     questions: [
@@ -189,9 +192,9 @@ export const PAST_SURVEYS: SurveyData[] = [
     title: 'Technology in Everyday Life',
     category: 'Technology & Innovation',
     endsOn: '14.08.2026',
-    badge: 'Ended',
-    detailEndLabel: 'Ended on 14.08.2026',
-    status: 'Past',
+    badge: 'Ends in 6 months',
+    detailEndLabel: 'Ends in 6 months',
+    status: 'Published',
     isEndingSoon: false,
     description: 'Share how technology influences your everyday routines.',
     questions: [

@@ -23,6 +23,7 @@ interface Survey {
   deadline?: string;
   deadlineLabel: string;
   status: SurveyStatus;
+  isEndingSoon: boolean;
 }
 
 /**
@@ -84,20 +85,23 @@ export class HomePage {
       status:
         survey.status === 'Published'
           ? 'active'
-          : 'past'
+          : 'past',
+      isEndingSoon: survey.isEndingSoon
     })
   );
 
   /**
-   * Returns up to three active surveys with the
-   * earliest deadlines first.
+   * Returns up to three surveys marked as ending soon.
+   *
+   * The surveys are sorted by their end date with
+   * the earliest deadline displayed first.
    */
   get endingSoonSurveys(): Survey[] {
     return this.surveys
       .filter(
         survey =>
           survey.status === 'active' &&
-          survey.deadline
+          survey.isEndingSoon
       )
       .sort(
         (firstSurvey, secondSurvey) =>
