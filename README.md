@@ -25,7 +25,6 @@ The project uses:
 - [Angular](https://angular.dev/) 22.1.6
 - [Angular CLI](https://angular.dev/tools/cli) 22.1.8
 - [TypeScript](https://www.typescriptlang.org/) 6.0.3
-- [RxJS](https://rxjs.dev/) 7.8.2
 - [Supabase](https://supabase.com/)
 - HTML
 - SCSS
