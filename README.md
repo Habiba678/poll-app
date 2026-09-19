@@ -1,130 +1,85 @@
 # Poll App
 
-A responsive survey application built with **Angular** and **TypeScript**.
+Poll App is a responsive web application for creating and participating in surveys.
 
-Poll App allows users to browse surveys, filter them by category, view survey details, answer questions and see survey results.
+The application was developed with Angular and provides an easy way to explore surveys, answer questions and view results.
 
----
+## ✨ What you can do
 
-## ✨ Features
+Users can:
 
-- 📋 **Survey Overview** – View active and past surveys
-- 🔥 **Ending Soon** – See surveys that are ending soon
-- 🏷️ **Category Filter** – Filter surveys by category
-- 🔄 **Reset Filter** – Return to all surveys
-- 🔎 **Survey Details** – View questions, options and additional information
-- 🗳️ **Vote on Surveys** – Select answers for survey questions
-- ✅ **Validation** – Required questions must be answered
-- 📊 **Survey Results** – View current survey results
-- 📝 **Create Surveys** – Create new surveys
-- 🔒 **Past Surveys** – Past surveys can be viewed but not submitted again
-- 📱 **Responsive Design** – Optimized for desktop, tablet and mobile
+- Browse published and past surveys
+- Find surveys that are ending soon
+- Filter surveys by different categories
+- Open a survey to see its questions and information
+- Select answers and complete a survey
+- See current survey results
+- Create new surveys
+- View past surveys without voting again
+- Use the application on desktop, tablet and mobile devices
 
----
+## 🛠️ Built with
 
-## 🛠️ Tech Stack
+The project uses:
 
-| Technology | Version | Purpose |
-|---|---:|---|
-| [Angular](https://angular.dev/) | 22.1.6 | Frontend framework |
-| [Angular CLI](https://angular.dev/tools/cli) | 22.1.8 | Angular development tools |
-| [TypeScript](https://www.typescriptlang.org/) | 6.0.3 | Application logic |
-| [RxJS](https://rxjs.dev/) | 7.8.2 | Reactive programming |
-| [Supabase](https://supabase.com/) | — | Backend connection |
-| SCSS | — | Styling |
-| HTML | — | Application structure |
+- [Angular](https://angular.dev/) 22.1.6
+- [Angular CLI](https://angular.dev/tools/cli) 22.1.8
+- [TypeScript](https://www.typescriptlang.org/) 6.0.3
+- [RxJS](https://rxjs.dev/) 7.8.2
+- [Supabase](https://supabase.com/)
+- HTML
+- SCSS
 
----
+## 📂 How the project is organized
 
-## 🅰️ Angular
+The Poll App is separated into different areas to keep the code organized and easier to maintain.
 
-This project was built with **Angular 22**.
+**Core**
 
-- Angular: **22.1.6**
-- Angular CLI: **22.1.8**
-- TypeScript: **6.0.3**
+Contains the survey data, models and services used throughout the application.
 
-For more information about Angular, visit the
-[official Angular documentation](https://angular.dev/).
+**Home Page**
 
----
+Displays the survey overview, ending-soon surveys, categories and filters.
 
-## 📁 Project Structure
+**Create Survey**
 
-```text
-src/
-├── app/
-│   ├── core/
-│   │   ├── data/
-│   │   ├── models/
-│   │   └── services/
-│   │
-│   └── features/
-│       ├── home-page/
-│       ├── create-component/
-│       └── survey-detail/
-│
-├── scss/
-│   ├── fonts.scss
-│   └── mixins.scss
-│
-└── styles.scss
+Contains the form and validation used when creating a new survey.
 
-public/
-└── assets/
-    ├── fonts/
-    ├── icons/
-    └── img/
-```
+**Survey Detail**
 
----
+Displays survey information, questions, answer options and survey results.
 
-## 📌 Survey Status
+**Assets**
 
-The application supports different survey states:
+Contains the icons, images and fonts used by the application.
 
-| Status | Description |
-|---|---|
-| 🟢 **Published** | Survey is currently active |
-| 🟠 **Ongoing** | Survey has no fixed end date |
-| ⚪ **Past** | Survey has already ended |
+## ⚙️ Run the project
 
-Past surveys can still be viewed, but new answers cannot be submitted.
-
----
-
-## 🚀 Getting Started
-
-Install the dependencies:
+First install the required packages:
 
 ```bash
 npm install
 ```
 
-Start the development server:
+Then start the Angular development server:
 
 ```bash
 ng serve
 ```
 
-The application will then run locally.
+## 🏗️ Create a build
 
----
-
-## 🏗️ Production Build
-
-Create a production build:
+To create the production version of the application, run:
 
 ```bash
 ng build
 ```
 
-The generated files are stored inside the `dist` directory.
+Angular creates the finished build inside the `dist` folder.
 
----
+## 💡 Poll App
 
-## 💡 About the Project
+The goal of Poll App is to provide a simple and responsive way to work with surveys.
 
-Poll App is an Angular application for creating, browsing and participating in surveys.
-
-The project focuses on a clear survey overview, category filtering, survey participation, results and a responsive user interface.
+The application combines survey creation, participation, filtering, validation and result viewing in one interface.
