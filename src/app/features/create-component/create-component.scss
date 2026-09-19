@@ -92,7 +92,6 @@
     border-radius: 8px;
     background: rgba(255, 183, 112, 0.34);
     color: #ffffff;
-    font-family: "Mulish", sans-serif;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
@@ -137,24 +136,20 @@
   &-form {
     width: 100%;
     min-width: 0;
-    display: grid;
-    grid-template-columns:
-      minmax(0, 470px)
-      minmax(0, 470px);
-    column-gap: 64px;
-    row-gap: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
   }
 
   &-info {
-    grid-column: 1 / -1;
     width: 100%;
     min-width: 0;
     display: grid;
     grid-template-columns:
-      minmax(0, 470px)
-      minmax(0, 470px);
-    gap: 64px;
-    justify-content: space-between;
+      minmax(0, 1fr)
+      minmax(0, 1fr);
+    column-gap: 64px;
+    align-items: start;
 
     &__left,
     &__right {
@@ -168,6 +163,17 @@
     }
   }
 
+  &-meta-row {
+    width: 100%;
+    min-width: 0;
+    display: grid;
+    grid-template-columns:
+      minmax(0, 1fr)
+      minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
+
   &-field,
   &-category {
     width: 100%;
@@ -179,12 +185,6 @@
 
   &-category {
     position: relative;
-  }
-
-  &-label {
-    color: #ffffff;
-    font-size: 16px;
-    font-weight: 600;
   }
 
   &-optional {
@@ -215,8 +215,10 @@
     outline: none;
     background: #fefdfb;
     color: #35273a;
-    font-family: "Mulish", sans-serif;
     font-size: 16px;
+    font-weight: 400;
+    line-height: 100%;
+    letter-spacing: 0;
 
     &:focus {
       box-shadow: 0 0 0 2px #ffb770;
@@ -228,6 +230,7 @@
 
     &::placeholder {
       color: #928b95;
+      opacity: 1;
     }
   }
 
@@ -255,6 +258,19 @@
     justify-content: flex-end;
     align-items: center;
   }
+}
+
+/* Shared Figma typography */
+.create-label,
+.question-title,
+.answer-heading {
+  margin: 0;
+  color: #fefdfb;
+  font-family: "Mulish", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 100%;
+  letter-spacing: 0;
 }
 
 .icon-button {
@@ -291,9 +307,8 @@
     border-radius: 5px;
     background: transparent;
     color: #ffffff;
-    font-family: "Mulish", sans-serif;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 400;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
@@ -336,8 +351,8 @@
       border: 0;
       background: transparent;
       color: #35273a;
-      font-family: "Mulish", sans-serif;
       font-size: 16px;
+      font-weight: 400;
       cursor: pointer;
       text-align: left;
 
@@ -355,12 +370,15 @@
 
 .question {
   &-area {
-    grid-column: 1;
     width: 100%;
     min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
+    display: grid;
+    grid-template-columns:
+      minmax(0, 1fr)
+      minmax(0, 1fr);
+    column-gap: 64px;
+    row-gap: 40px;
+    align-items: start;
   }
 
   &-block {
@@ -378,13 +396,6 @@
     justify-content: space-between;
     align-items: center;
     gap: 12px;
-  }
-
-  &-title {
-    margin: 0;
-    color: #ffffff;
-    font-size: 16px;
-    font-weight: 700;
   }
 
   &-field {
@@ -405,12 +416,6 @@
     justify-content: space-between;
     align-items: center;
     gap: 12px;
-  }
-
-  &-heading {
-    color: #ffffff;
-    font-size: 16px;
-    font-weight: 700;
   }
 
   &-list {
@@ -478,7 +483,6 @@
     border-bottom: 1px solid #ffffff;
     background: transparent;
     color: #ffffff;
-    font-family: "Mulish", sans-serif;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
@@ -493,11 +497,9 @@
   }
 
   &-question-area {
-    grid-column: 2;
-    align-self: start;
     width: 100%;
     min-width: 0;
-    padding-top: 8px;
+    padding-top: 0;
     box-sizing: border-box;
     display: flex;
     justify-content: flex-start;
@@ -513,7 +515,6 @@
     border-radius: 10px;
     background: rgba(255, 183, 112, 0.3);
     color: #ffffff;
-    font-family: "Mulish", sans-serif;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
@@ -541,7 +542,6 @@
     border-radius: 10px;
     background: #ffcfa1;
     color: #35273a;
-    font-family: "Mulish", sans-serif;
     font-size: 16px;
     font-weight: 700;
     cursor: pointer;
@@ -635,9 +635,9 @@
       padding: 30px 24px;
     }
 
-    &-form,
     &-info {
       grid-template-columns: 1fr;
+      row-gap: 24px;
     }
 
     &-footer {
@@ -645,9 +645,8 @@
     }
   }
 
-  .question-area,
-  .add-question-area {
-    grid-column: 1;
+  .question-area {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -768,6 +767,12 @@
       &__left {
         gap: 16px;
       }
+    }
+
+    &-meta-row {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
     &-input-row,

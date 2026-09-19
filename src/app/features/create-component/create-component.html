@@ -80,95 +80,111 @@
                 }
               </div>
 
-              <div class="create-category">
-                <label class="create-label">
-                  Choose category
-                </label>
+              <div class="create-meta-row">
 
-                <button
-                  class="category-select"
-                  type="button"
-                  [class.category-select--invalid]="publishAttempted && !selectedCategory"
-                  (click)="toggleCategories($event)"
-                >
-                  <span>
-                    {{ selectedCategory || 'Choose category' }}
-                  </span>
-
-                  <img
-                    class="category-arrow"
-                    [class.category-arrow--open]="categoryMenuOpen"
-                    src="/assets/icons/icon-drop-down.svg"
-                    alt=""
+                <div class="create-field">
+                  <label
+                    class="create-label"
+                    for="surveyEndDate"
                   >
-                </button>
+                    Set end date
+                    <span class="create-optional">
+                      (optional)
+                    </span>
+                  </label>
 
-                @if (categoryMenuOpen) {
-                  <div class="category-menu">
+                  <div class="create-input-row">
+                    <input
+                      id="surveyEndDate"
+                      class="create-input"
+                      type="date"
+                      [(ngModel)]="surveyEndDate"
+                      [min]="minimumDate"
+                    >
 
-                    @for (
-                      categoryItem of categoryOptions;
-                      track categoryItem
-                    ) {
-                      <button
-                        class="category-menu__item"
-                        type="button"
-                        [class.category-menu__item--selected]="categoryItem === selectedCategory"
-                        (click)="chooseCategory(categoryItem, $event)"
+                    <button
+                      class="icon-button"
+                      type="button"
+                      (click)="resetEndDate()"
+                      aria-label="Delete end date"
+                    >
+                      <img
+                        src="/assets/icons/icon-delete.svg"
+                        alt=""
                       >
-                        {{ categoryItem }}
-                      </button>
-                    }
-
+                    </button>
                   </div>
-                }
+                </div>
 
-                @if (publishAttempted && !selectedCategory) {
-                  <span class="create-error">
-                    Category is required
-                  </span>
-                }
-              </div>
-
-              <div class="create-field">
-                <label
-                  class="create-label"
-                  for="surveyEndDate"
-                >
-                  Set end date
-                  <span class="create-optional">
-                    (optional)
-                  </span>
-                </label>
-
-                <div class="create-input-row">
-                  <input
-                    id="surveyEndDate"
-                    class="create-input"
-                    type="date"
-                    [(ngModel)]="surveyEndDate"
-                    [min]="minimumDate"
-                  >
+                <div class="create-category">
+                  <label class="create-label">
+                    Choose category
+                  </label>
 
                   <button
-                    class="icon-button"
+                    class="category-select"
                     type="button"
-                    (click)="resetEndDate()"
-                    aria-label="Delete end date"
+                    [class.category-select--invalid]="
+                      publishAttempted && !selectedCategory
+                    "
+                    (click)="toggleCategories($event)"
                   >
+                    <span>
+                      {{ selectedCategory }}
+                    </span>
+
                     <img
-                      src="/assets/icons/icon-delete.svg"
+                      class="category-arrow"
+                      [class.category-arrow--open]="categoryMenuOpen"
+                      src="/assets/icons/icon-drop-down.svg"
                       alt=""
                     >
                   </button>
+
+                  @if (categoryMenuOpen) {
+                    <div class="category-menu">
+
+                      @for (
+                        categoryItem of categoryOptions;
+                        track categoryItem
+                      ) {
+                        <button
+                          class="category-menu__item"
+                          type="button"
+                          [class.category-menu__item--selected]="
+                            categoryItem === selectedCategory
+                          "
+                          (click)="
+                            chooseCategory(
+                              categoryItem,
+                              $event
+                            )
+                          "
+                        >
+                          {{ categoryItem }}
+                        </button>
+                      }
+
+                    </div>
+                  }
+
+                  @if (
+                    publishAttempted &&
+                    !selectedCategory
+                  ) {
+                    <span class="create-error">
+                      Category is required
+                    </span>
+                  }
                 </div>
+
               </div>
 
             </div>
 
             <div class="create-info__right">
-              <div class="create-field">
 
+              <div class="create-field">
                 <label
                   class="create-label"
                   for="surveyDescription"
@@ -200,6 +216,7 @@
                 </div>
 
               </div>
+
             </div>
 
           </section>
@@ -242,12 +259,20 @@
                     [(ngModel)]="questionItem.text"
                     #questionInput="ngModel"
                     required
-                    placeholder="Enter your question"
+                    [placeholder]="
+                      questionIndex === 0
+                        ? 'Which date would work best for you?'
+                        : questionIndex === 1
+                          ? 'Choose the activities you prefer'
+                          : 'Enter your question'
+                    "
                   >
 
                   @if (
-                    (questionInput.invalid && questionInput.touched) ||
-                    (publishAttempted && !questionItem.text.trim())
+                    (questionInput.invalid &&
+                      questionInput.touched) ||
+                    (publishAttempted &&
+                      !questionItem.text.trim())
                   ) {
                     <span class="create-error">
                       Question is required
@@ -265,7 +290,9 @@
                   <label class="multiple-answer">
                     <input
                       type="checkbox"
-                      [(ngModel)]="questionItem.multipleAnswers"
+                      [(ngModel)]="
+                        questionItem.multipleAnswers
+                      "
                     >
 
                     <span>
@@ -300,8 +327,10 @@
                         >
 
                         @if (
-                          (answerInput.invalid && answerInput.touched) ||
-                          (publishAttempted && !answerItem.text.trim())
+                          (answerInput.invalid &&
+                            answerInput.touched) ||
+                          (publishAttempted &&
+                            !answerItem.text.trim())
                         ) {
                           <span class="create-error">
                             Answer is required
@@ -313,7 +342,12 @@
                       <button
                         class="icon-button answer-delete"
                         type="button"
-                        (click)="deleteAnswer(questionItem, answerIndex)"
+                        (click)="
+                          deleteAnswer(
+                            questionItem,
+                            answerIndex
+                          )
+                        "
                         aria-label="Delete answer"
                       >
                         <img
