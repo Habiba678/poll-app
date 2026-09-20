@@ -935,6 +935,9 @@
     &__name {
       max-width: calc(100% - 150px);
       padding-right: 8px;
+      font-size: 16px;
+      line-height: 100%;
+      letter-spacing: 0;
     }
 
     &__deadline {
@@ -953,6 +956,35 @@
 
     &__title {
       font-size: 38px;
+    }
+  }
+}
+
+@media (max-width: 320px) {
+  .survey-list {
+    &__card {
+      padding: 14px 12px;
+    }
+
+    &__content {
+      width: 100%;
+      gap: 6px;
+    }
+
+    &__name {
+      max-width: calc(100% - 112px);
+      padding-right: 4px;
+      font-size: 16px;
+      line-height: 100%;
+      letter-spacing: 0;
+    }
+
+    &__deadline {
+      right: 10px;
+      bottom: 10px;
+      padding: 3px 5px;
+      font-size: 16px;
+      white-space: nowrap;
     }
   }
 }

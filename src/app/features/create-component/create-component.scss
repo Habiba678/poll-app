@@ -260,7 +260,6 @@
   }
 }
 
-/* Shared Figma typography */
 .create-label,
 .question-title,
 .answer-heading {
@@ -791,8 +790,15 @@
   .create-input-row .icon-button,
   .create-textarea-row .icon-button {
     position: absolute;
-    top: -27px;
     right: 0;
+  }
+
+  .create-input-row .icon-button {
+    top: -27px;
+  }
+
+  .create-textarea-row .icon-button {
+    top: -32px;
   }
 
   .category-select {
