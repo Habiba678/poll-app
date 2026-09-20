@@ -216,7 +216,7 @@ export const PUBLISHED_SURVEYS: SurveyData[] = [
     title: 'Gaming habits and favorite games!',
     category: 'Gaming & Entertainment',
     endsOn: '03.09.2026',
-    badge: 'Ongoing',
+    badge: 'Ends Ongoing',
     detailEndLabel: 'Ongoing',
     status: 'Published',
     isEndingSoon: true,

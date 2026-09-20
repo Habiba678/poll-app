@@ -12,7 +12,7 @@ export const PAST_SURVEYS: SurveyData[] = [
     title: 'Discover Your Learning Style',
     category: 'Education & Learning',
     endsOn: '10.08.2026',
-    badge: 'Ongoing',
+    badge: 'Ends Ongoing',
     detailEndLabel: 'Ongoing',
     status: 'Published',
     isEndingSoon: false,
