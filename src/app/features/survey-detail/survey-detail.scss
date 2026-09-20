@@ -238,13 +238,20 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  min-width: 92px;
   padding: 3px 8px;
+  box-sizing: border-box;
   border-radius: 6px;
   color: #2e7d32;
   background-color: #e8f5e9;
   font-size: 14px;
   font-weight: 400;
   white-space: nowrap;
+  visibility: hidden;
+
+  &--visible {
+    visibility: visible;
+  }
 }
 
 .answered-check-icon {

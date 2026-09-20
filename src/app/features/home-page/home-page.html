@@ -228,24 +228,9 @@
 
           @if (activeCategory !== 'All Surveys') {
 
-            <button
-              class="category-filter__selected"
-              type="button"
-              (click)="clearSurveyCategory($event)"
-            >
-
-              <span>
-                {{ activeCategory }}
-              </span>
-
-              <span
-                class="category-filter__remove"
-                aria-hidden="true"
-              >
-                ×
-              </span>
-
-            </button>
+            <div class="category-filter__selected">
+              {{ activeCategory }}
+            </div>
 
           }
 
@@ -259,7 +244,6 @@
           class="survey-list"
           role="region"
           aria-label="Available surveys"
-          tabindex="0"
         >
 
           @for (survey of displayedSurveys; track survey.id) {

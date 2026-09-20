@@ -110,20 +110,21 @@
                     {{ question.text }}
                   </h3>
 
-                  @if (
-                    selectedOptions[question.id]?.length &&
-                    !isSurveyEnded &&
-                    !isSubmitted
-                  ) {
-                    <span class="question-answered">
-                      <img
-                        src="assets/icons/icon-check.svg"
-                        alt=""
-                        class="answered-check-icon"
-                      >
-                      Answered
-                    </span>
-                  }
+                  <span
+                    class="question-answered"
+                    [class.question-answered--visible]="
+                      selectedOptions[question.id]?.length &&
+                      !isSurveyEnded &&
+                      !isSubmitted
+                    "
+                  >
+                    <img
+                      src="assets/icons/icon-check.svg"
+                      alt=""
+                      class="answered-check-icon"
+                    >
+                    Answered
+                  </span>
 
                 </div>
 
@@ -375,17 +376,10 @@
 
       <div class="survey-popup">
 
-        <img
-          src="assets/icons/icon-close-btn-dark.svg"
-          alt="close"
-          class="popup-close"
-          (click)="closeCompletePopup()"
-        >
-
         <div class="popup-content">
           <span>
-            Your survey is now<br>
-            completed
+            You have completed<br>
+            the survey!
           </span>
         </div>
 

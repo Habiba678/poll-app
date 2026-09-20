@@ -383,61 +383,31 @@
     margin-top: 4px;
     padding: 4px 10px;
     box-sizing: border-box;
-    border: 0;
     border-radius: 6px;
-    background-color: transparent;
     color: #ffb770;
     font-family: "Mulish", sans-serif;
     font-size: 16px;
     font-weight: 400;
     line-height: 18px;
-    cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 4px;
-  }
-
-  &__remove {
-    font-size: 18px;
-    line-height: 1;
   }
 }
 
 .survey-list-wrapper {
-  width: calc(100% + 12px);
+  width: 100%;
   margin-top: 16px;
-  margin-right: -12px;
   position: relative;
 }
 
 .survey-list {
   width: 100%;
-  height: 120px;
-  padding-right: 16px;
   box-sizing: border-box;
   display: grid;
   grid-template-columns: repeat(2, 513px);
-  grid-auto-rows: 127px;
+  grid-auto-rows: minmax(127px, auto);
   justify-content: space-between;
   gap: 16px;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: #ffb770 transparent;
-
-  &::-webkit-scrollbar {
-    width: 8px;
-    height: 64px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: #ffb770;
-    border-radius: 10px;
-  }
 
   &__card {
     width: 513px;
@@ -616,22 +586,10 @@
 }
 
 @media (max-width: 768px) {
-  :host {
-    background-color: #ffffff;
-  }
-
   .home-screen {
-    min-height: auto;
+    min-height: 100vh;
     margin-bottom: 0;
     padding-top: 24px;
-
-    &::after {
-      content: "";
-      width: 100%;
-      height: 40px;
-      background-color: #ffffff;
-      display: block;
-    }
   }
 
   .home-header,
@@ -737,15 +695,14 @@
   }
 
   .soon-surveys {
-    width: calc(100% - 8px);
-    margin-left: 8px;
-    padding-right: 8px;
-    padding-bottom: 8px;
+    width: 100%;
     box-sizing: border-box;
     display: flex;
-    gap: 16px;
+    gap: 12px;
     overflow-x: auto;
+    overflow-y: hidden;
     scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
 
     &::-webkit-scrollbar {
@@ -753,10 +710,13 @@
     }
 
     &__card {
-      flex: 0 0 78%;
+      width: 260px;
+      min-width: 260px;
       min-height: 190px;
       padding: 16px;
+      box-sizing: border-box;
       border-radius: 0 55px 0 0;
+      flex: 0 0 260px;
       scroll-snap-align: start;
     }
 
@@ -767,6 +727,7 @@
     }
 
     &__name {
+      width: 100%;
       margin-top: 8px;
       line-height: 21px;
     }
@@ -830,7 +791,6 @@
     grid-template-columns: 1fr;
     grid-auto-rows: auto;
     gap: 16px;
-    overflow: visible;
 
     &__card {
       width: 100%;
@@ -919,7 +879,10 @@
     gap: 12px;
 
     &__card {
+      width: 220px;
+      min-width: 220px;
       min-height: 185px;
+      flex-basis: 220px;
     }
   }
 
@@ -961,6 +924,14 @@
 }
 
 @media (max-width: 320px) {
+  .soon-surveys {
+    &__card {
+      width: 210px;
+      min-width: 210px;
+      flex-basis: 210px;
+    }
+  }
+
   .survey-list {
     &__card {
       padding: 14px 12px;
