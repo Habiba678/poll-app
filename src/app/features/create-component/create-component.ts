@@ -7,30 +7,25 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-/**
- * Represents a single answer while creating a survey.
- */
+import { SurveyData } from '../../core/models/survey.model';
+
+/** Represents a single answer while creating a survey. */
 interface CreateAnswer {
   key: string;
   text: string;
+  touched: boolean;
 }
 
-/**
- * Represents a question while creating a survey.
- */
+/** Represents a question while creating a survey. */
 interface CreateQuestion {
   id: number;
   text: string;
+  touched: boolean;
   multipleAnswers: boolean;
   answers: CreateAnswer[];
 }
 
-/**
- * Provides the form for creating a new survey.
- *
- * The component handles survey information, questions,
- * answer options, category selection and form validation.
- */
+/** Provides the form for creating a new survey. */
 @Component({
   selector: 'app-create-component',
   standalone: true,
@@ -39,22 +34,15 @@ interface CreateQuestion {
   styleUrl: './create-component.scss'
 })
 export class CreateComponent {
-
-  /**
-   * Emits when the create-survey view should be closed.
-   */
   @Output() closeCreate = new EventEmitter<void>();
-
-  /**
-   * Emits after a survey has successfully passed validation
-   * and the publish confirmation has been closed.
-   */
-  @Output() surveyPublished = new EventEmitter<void>();
+  @Output() surveyPublished = new EventEmitter<SurveyData>();
 
   surveyTitle = '';
   surveyEndDate = '';
   surveyDescription = '';
 
+  titleTouched = false;
+  categoryTouched = false;
   selectedCategory = '';
   categoryMenuOpen = false;
 
@@ -62,10 +50,11 @@ export class CreateComponent {
   publishMessageVisible = false;
   publishClicked = false;
 
-  /**
-   * Categories available when creating a survey.
-   */
+  private publishedSurvey: SurveyData | null = null;
+
+  /** Categories available when creating a survey. */
   categoryOptions: string[] = [
+    'All Surveys',
     'Team Activities',
     'Health & Wellness',
     'Gaming & Entertainment',
@@ -74,191 +63,143 @@ export class CreateComponent {
     'Technology & Innovation'
   ];
 
-  /**
-   * Questions currently included in the survey.
-   */
+  /** Questions currently included in the survey. */
   surveyQuestions: CreateQuestion[] = [
     this.createEmptyQuestion(1)
   ];
 
-  /**
-   * Returns today's date in the format required by
-   * an HTML date input.
-   */
+  /** Returns today's date for the date input. */
   get minimumDate(): string {
     const today = new Date();
-
     const year = today.getFullYear();
-
-    const month = String(
-      today.getMonth() + 1
-    ).padStart(2, '0');
-
-    const day = String(
-      today.getDate()
-    ).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
   }
 
-  /**
-   * Closes the create-survey view.
-   */
+  /** Closes the create-survey view. */
   cancelCreate(): void {
     this.closeCreate.emit();
   }
 
-  /**
-   * Clears the entered survey title.
-   */
-  resetTitle(): void {
-    this.surveyTitle = '';
+  /** Marks the survey title as touched. */
+  touchTitle(): void {
+    this.titleTouched = true;
   }
 
-  /**
-   * Clears the selected survey end date.
-   */
+  /** Marks a question as touched. */
+  touchQuestion(question: CreateQuestion): void {
+    question.touched = true;
+  }
+
+  /** Marks an answer as touched. */
+  touchAnswer(answer: CreateAnswer): void {
+    answer.touched = true;
+  }
+
+  /** Checks whether the title error should be visible. */
+  showTitleError(): boolean {
+    return (this.titleTouched || this.publishAttempted) &&
+      !this.surveyTitle.trim();
+  }
+
+  /** Checks whether a question error should be visible. */
+  showQuestionError(question: CreateQuestion): boolean {
+    return (question.touched || this.publishAttempted) &&
+      !question.text.trim();
+  }
+
+  /** Checks whether an answer error should be visible. */
+  showAnswerError(answer: CreateAnswer): boolean {
+    return (answer.touched || this.publishAttempted) &&
+      !answer.text.trim();
+  }
+
+  /** Checks whether the category error should be visible. */
+  showCategoryError(): boolean {
+    return (this.categoryTouched || this.publishAttempted) &&
+      !this.selectedCategory;
+  }
+
+  /** Clears the survey title. */
+  resetTitle(): void {
+    this.surveyTitle = '';
+    this.titleTouched = true;
+  }
+
+  /** Clears the selected end date. */
   resetEndDate(): void {
     this.surveyEndDate = '';
   }
 
-  /**
-   * Clears the entered survey description.
-   */
+  /** Clears the survey description. */
   resetDescription(): void {
     this.surveyDescription = '';
   }
 
-  /**
-   * Opens or closes the category dropdown.
-   *
-   * @param event Click event used to prevent the document
-   * click listener from immediately closing the dropdown.
-   */
+  /** Opens or closes the category dropdown. */
   toggleCategories(event: Event): void {
     event.stopPropagation();
-
+    this.categoryTouched = true;
     this.categoryMenuOpen = !this.categoryMenuOpen;
   }
 
-  /**
-   * Selects a survey category and closes the category menu.
-   *
-   * @param category Category selected by the user.
-   * @param event Click event of the selected category.
-   */
-  chooseCategory(
-    category: string,
-    event: Event
-  ): void {
+  /** Selects a survey category. */
+  chooseCategory(category: string, event: Event): void {
     event.stopPropagation();
-
     this.selectedCategory = category;
+    this.categoryTouched = true;
     this.categoryMenuOpen = false;
   }
 
-  /**
-   * Closes the category dropdown when the user clicks
-   * somewhere outside of it.
-   */
+  /** Closes the category dropdown. */
   @HostListener('document:click')
   closeCategoryMenu(): void {
     this.categoryMenuOpen = false;
   }
 
-  /**
-   * Adds a new empty question to the survey.
-   */
+  /** Adds a new empty question. */
   addQuestion(): void {
-    const nextId =
-      Math.max(
-        ...this.surveyQuestions.map(
-          question => question.id
-        )
-      ) + 1;
+    const ids = this.surveyQuestions.map(question => question.id);
+    const nextId = Math.max(...ids) + 1;
 
-    this.surveyQuestions.push(
-      this.createEmptyQuestion(nextId)
-    );
+    this.surveyQuestions.push(this.createEmptyQuestion(nextId));
   }
 
-  /**
-   * Deletes a question.
-   *
-   * The first question always remains available and is
-   * cleared instead of being removed.
-   *
-   * @param questionIndex Index of the question to delete.
-   */
+  /** Deletes a question. */
   deleteQuestion(questionIndex: number): void {
     if (questionIndex === 0) {
-      this.clearQuestion(
-        this.surveyQuestions[0]
-      );
-
+      this.clearQuestion(this.surveyQuestions[0]);
       return;
     }
 
-    this.surveyQuestions.splice(
-      questionIndex,
-      1
-    );
+    this.surveyQuestions.splice(questionIndex, 1);
   }
 
-  /**
-   * Adds another answer option to a question.
-   *
-   * A question can contain a maximum of five answers.
-   *
-   * @param question Question receiving the new answer.
-   */
+  /** Adds another answer option. */
   addAnswer(question: CreateQuestion): void {
     if (question.answers.length >= 5) {
       return;
     }
 
-    const nextLetter = String.fromCharCode(
-      65 + question.answers.length
-    );
-
-    question.answers.push({
-      key: nextLetter,
-      text: ''
-    });
+    const nextLetter = String.fromCharCode(65 + question.answers.length);
+    question.answers.push(this.createEmptyAnswer(nextLetter));
   }
 
-  /**
-   * Deletes an answer option from a question.
-   *
-   * Every question keeps at least two answer options.
-   *
-   * @param question Question containing the answer.
-   * @param answerIndex Index of the answer to delete.
-   */
-  deleteAnswer(
-    question: CreateQuestion,
-    answerIndex: number
-  ): void {
+  /** Deletes an answer option. */
+  deleteAnswer(question: CreateQuestion, answerIndex: number): void {
     if (question.answers.length <= 2) {
       question.answers[answerIndex].text = '';
-
+      question.answers[answerIndex].touched = true;
       return;
     }
 
-    question.answers.splice(
-      answerIndex,
-      1
-    );
-
+    question.answers.splice(answerIndex, 1);
     this.updateAnswerLetters(question);
   }
 
-  /**
-   * Validates the survey before publishing.
-   *
-   * If all required information is available,
-   * the publish confirmation is displayed.
-   */
+  /** Validates and prepares the survey for publishing. */
   publishSurvey(): void {
     this.publishAttempted = true;
 
@@ -267,119 +208,135 @@ export class CreateComponent {
       return;
     }
 
+    this.publishedSurvey = this.createSurveyData();
     this.publishClicked = true;
     this.publishMessageVisible = true;
   }
 
-  /**
-   * Closes the publish confirmation and informs
-   * the parent component that publishing was completed.
-   */
+  /** Closes the confirmation and publishes the survey. */
   closePublishMessage(): void {
+    if (!this.publishedSurvey) {
+      return;
+    }
+
     this.publishMessageVisible = false;
-    this.surveyPublished.emit();
+    this.surveyPublished.emit(this.publishedSurvey);
   }
 
-  /**
-   * Checks whether all required survey fields contain
-   * valid values.
-   *
-   * @returns True when the survey can be published.
-   */
-  private formIsComplete(): boolean {
-    if (!this.surveyTitle.trim()) {
+  /** Checks whether all required fields are valid. */
+  formIsComplete(): boolean {
+    if (!this.surveyTitle.trim() || !this.selectedCategory) {
       return false;
     }
 
-    if (!this.selectedCategory) {
+    if (this.surveyEndDate && this.surveyEndDate < this.minimumDate) {
       return false;
     }
 
-    if (
-      this.surveyEndDate &&
-      this.surveyEndDate < this.minimumDate
-    ) {
-      return false;
-    }
-
-    for (const question of this.surveyQuestions) {
-      if (!question.text.trim()) {
-        return false;
-      }
-
-      for (const answer of question.answers) {
-        if (!answer.text.trim()) {
-          return false;
-        }
-      }
-    }
-
-    return true;
+    return this.questionsAreComplete();
   }
 
-  /**
-   * Creates a new question with two empty answer options.
-   *
-   * @param id Identifier assigned to the question.
-   * @returns Newly created empty question.
-   */
-  private createEmptyQuestion(
-    id: number
-  ): CreateQuestion {
+  /** Creates the finished survey data. */
+  private createSurveyData(): SurveyData {
+    const endDate = this.formatEndDate();
+    const ongoing = !endDate;
+
+    return {
+      id: this.createSurveyId(),
+      title: this.surveyTitle.trim(),
+      category: this.selectedCategory,
+      endsOn: endDate || undefined,
+      badge: ongoing ? 'Ends Ongoing' : `Ends ${endDate}`,
+      detailEndLabel: ongoing ? 'Ongoing' : `Ends on ${endDate}`,
+      status: 'Published',
+      isEndingSoon: false,
+      description: this.surveyDescription.trim(),
+      questions: this.createSurveyQuestions()
+    };
+  }
+
+  /** Creates the questions used by the detail page. */
+  private createSurveyQuestions() {
+    return this.surveyQuestions.map((question, index) => ({
+      id: question.id,
+      number: index + 1,
+      text: question.text.trim(),
+      subtitle: question.multipleAnswers
+        ? 'More than one answer is possible.'
+        : undefined,
+      options: question.answers.map(answer => ({
+        key: answer.key,
+        text: answer.text.trim(),
+        percentage: 0
+      }))
+    }));
+  }
+
+  /** Creates a unique survey identifier. */
+  private createSurveyId(): string {
+    return `created-${Date.now()}`;
+  }
+
+  /** Converts the date input into DD.MM.YYYY. */
+  private formatEndDate(): string {
+    if (!this.surveyEndDate) {
+      return '';
+    }
+
+    const [year, month, day] = this.surveyEndDate.split('-');
+    return `${day}.${month}.${year}`;
+  }
+
+  /** Checks all questions and answers. */
+  private questionsAreComplete(): boolean {
+    return this.surveyQuestions.every(question =>
+      !!question.text.trim() && this.answersAreComplete(question)
+    );
+  }
+
+  /** Checks all answers of one question. */
+  private answersAreComplete(question: CreateQuestion): boolean {
+    return question.answers.every(answer => !!answer.text.trim());
+  }
+
+  /** Creates a new empty question. */
+  private createEmptyQuestion(id: number): CreateQuestion {
     return {
       id,
       text: '',
+      touched: false,
       multipleAnswers: false,
       answers: [
-        {
-          key: 'A',
-          text: ''
-        },
-        {
-          key: 'B',
-          text: ''
-        }
+        this.createEmptyAnswer('A'),
+        this.createEmptyAnswer('B')
       ]
     };
   }
 
-  /**
-   * Restores a question to its initial empty state.
-   *
-   * @param question Question that should be cleared.
-   */
-  private clearQuestion(
-    question: CreateQuestion
-  ): void {
-    question.text = '';
-    question.multipleAnswers = false;
+  /** Creates a new empty answer. */
+  private createEmptyAnswer(key: string): CreateAnswer {
+    return {
+      key,
+      text: '',
+      touched: false
+    };
+  }
 
+  /** Restores a question to its empty state. */
+  private clearQuestion(question: CreateQuestion): void {
+    question.text = '';
+    question.touched = true;
+    question.multipleAnswers = false;
     question.answers = [
-      {
-        key: 'A',
-        text: ''
-      },
-      {
-        key: 'B',
-        text: ''
-      }
+      this.createEmptyAnswer('A'),
+      this.createEmptyAnswer('B')
     ];
   }
 
-  /**
-   * Reassigns answer letters after an answer was deleted.
-   *
-   * @param question Question whose answers should be updated.
-   */
-  private updateAnswerLetters(
-    question: CreateQuestion
-  ): void {
-    question.answers.forEach(
-      (answer, index) => {
-        answer.key = String.fromCharCode(
-          65 + index
-        );
-      }
-    );
+  /** Reassigns answer letters. */
+  private updateAnswerLetters(question: CreateQuestion): void {
+    question.answers.forEach((answer, index) => {
+      answer.key = String.fromCharCode(65 + index);
+    });
   }
 }

@@ -1,11 +1,4 @@
-@if (createSurveyVisible) {
-
-  <app-create-component
-    (closeCreate)="hideCreateSurvey()"
-    (surveyPublished)="hideCreateSurvey()"
-  ></app-create-component>
-
-} @else if (selectedSurveyId === null) {
+@if (selectedSurveyId === null) {
 
   <main class="home-screen">
 
@@ -303,5 +296,14 @@
     (closeDetail)="closeSurveyDetails()"
     (openCreate)="showCreateSurvey()"
   ></app-survey-detail>
+
+}
+
+@if (createSurveyVisible) {
+
+  <app-create-component
+    (closeCreate)="hideCreateSurvey()"
+    (surveyPublished)="handleSurveyPublished($event)"
+  ></app-create-component>
 
 }

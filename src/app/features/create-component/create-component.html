@@ -53,8 +53,7 @@
                     class="create-input"
                     type="text"
                     [(ngModel)]="surveyTitle"
-                    #titleInput="ngModel"
-                    required
+                    (blur)="touchTitle()"
                   >
 
                   <button
@@ -70,14 +69,13 @@
                   </button>
                 </div>
 
-                @if (
-                  (titleInput.invalid && titleInput.touched) ||
-                  (publishAttempted && !surveyTitle.trim())
-                ) {
-                  <span class="create-error">
-                    Survey name is required
-                  </span>
-                }
+                <div class="create-error-space">
+                  @if (showTitleError()) {
+                    <span class="create-error">
+                      Survey name is required
+                    </span>
+                  }
+                </div>
               </div>
 
               <div class="create-meta-row">
@@ -114,23 +112,19 @@
                       >
                     </button>
                   </div>
+
+                  <div class="create-error-space"></div>
                 </div>
 
                 <div class="create-category">
-                  <label class="create-label">
-                    Choose category
-                  </label>
-
                   <button
                     class="category-select"
                     type="button"
-                    [class.category-select--invalid]="
-                      publishAttempted && !selectedCategory
-                    "
+                    [class.category-select--invalid]="showCategoryError()"
                     (click)="toggleCategories($event)"
                   >
                     <span>
-                      {{ selectedCategory }}
+                      {{ selectedCategory || 'Choose category' }}
                     </span>
 
                     <img
@@ -154,12 +148,7 @@
                           [class.category-menu__item--selected]="
                             categoryItem === selectedCategory
                           "
-                          (click)="
-                            chooseCategory(
-                              categoryItem,
-                              $event
-                            )
-                          "
+                          (click)="chooseCategory(categoryItem, $event)"
                         >
                           {{ categoryItem }}
                         </button>
@@ -168,14 +157,13 @@
                     </div>
                   }
 
-                  @if (
-                    publishAttempted &&
-                    !selectedCategory
-                  ) {
-                    <span class="create-error">
-                      Category is required
-                    </span>
-                  }
+                  <div class="create-error-space">
+                    @if (showCategoryError()) {
+                      <span class="create-error">
+                        Category is required
+                      </span>
+                    }
+                  </div>
                 </div>
 
               </div>
@@ -199,6 +187,8 @@
                   <textarea
                     id="surveyDescription"
                     class="create-textarea"
+                    maxlength="150"
+                    placeholder="Describe your survey (max. 150 characters)"
                     [(ngModel)]="surveyDescription"
                   ></textarea>
 
@@ -215,6 +205,9 @@
                   </button>
                 </div>
 
+                <span class="create-character-count">
+                  {{ surveyDescription.length }}/150
+                </span>
               </div>
 
             </div>
@@ -232,7 +225,6 @@
               <article class="question-block">
 
                 <div class="question-header">
-
                   <h2 class="question-title">
                     {{ questionIndex + 1 }}. Question
                   </h2>
@@ -248,17 +240,14 @@
                       alt=""
                     >
                   </button>
-
                 </div>
 
                 <div class="question-field">
-
                   <input
                     class="create-input question-input"
                     type="text"
                     [(ngModel)]="questionItem.text"
-                    #questionInput="ngModel"
-                    required
+                    (blur)="touchQuestion(questionItem)"
                     [placeholder]="
                       questionIndex === 0
                         ? 'Which date would work best for you?'
@@ -268,21 +257,16 @@
                     "
                   >
 
-                  @if (
-                    (questionInput.invalid &&
-                      questionInput.touched) ||
-                    (publishAttempted &&
-                      !questionItem.text.trim())
-                  ) {
-                    <span class="create-error">
-                      Question is required
-                    </span>
-                  }
-
+                  <div class="create-error-space">
+                    @if (showQuestionError(questionItem)) {
+                      <span class="create-error">
+                        Question is required
+                      </span>
+                    }
+                  </div>
                 </div>
 
                 <div class="answer-header">
-
                   <span class="answer-heading">
                     Answers
                   </span>
@@ -290,16 +274,13 @@
                   <label class="multiple-answer">
                     <input
                       type="checkbox"
-                      [(ngModel)]="
-                        questionItem.multipleAnswers
-                      "
+                      [(ngModel)]="questionItem.multipleAnswers"
                     >
 
                     <span>
                       Allow multiple answers.
                     </span>
                   </label>
-
                 </div>
 
                 <div class="answer-list">
@@ -317,37 +298,29 @@
                       </span>
 
                       <div class="answer-input-wrapper">
-
                         <input
                           class="create-input answer-input"
                           type="text"
                           [(ngModel)]="answerItem.text"
-                          #answerInput="ngModel"
-                          required
+                          (blur)="touchAnswer(answerItem)"
                         >
 
-                        @if (
-                          (answerInput.invalid &&
-                            answerInput.touched) ||
-                          (publishAttempted &&
-                            !answerItem.text.trim())
-                        ) {
-                          <span class="create-error">
-                            Answer is required
-                          </span>
-                        }
-
+                        <div class="create-error-space">
+                          @if (showAnswerError(answerItem)) {
+                            <span class="create-error">
+                              Answer is required
+                            </span>
+                          }
+                        </div>
                       </div>
 
                       <button
                         class="icon-button answer-delete"
                         type="button"
-                        (click)="
-                          deleteAnswer(
-                            questionItem,
-                            answerIndex
-                          )
-                        "
+                        (click)="deleteAnswer(
+                          questionItem,
+                          answerIndex
+                        )"
                         aria-label="Delete answer"
                       >
                         <img
@@ -363,7 +336,6 @@
                 </div>
 
                 @if (questionItem.answers.length < 5) {
-
                   <button
                     class="add-answer"
                     type="button"
@@ -376,7 +348,6 @@
                       alt=""
                     >
                   </button>
-
                 }
 
               </article>
@@ -386,7 +357,6 @@
           </section>
 
           <div class="add-question-area">
-
             <button
               class="add-question"
               type="button"
@@ -399,17 +369,16 @@
                 alt=""
               >
             </button>
-
           </div>
 
         </div>
       </div>
 
       <footer class="create-footer">
-
         <button
           class="publish-survey"
           type="button"
+          [disabled]="!formIsComplete()"
           (click)="publishSurvey()"
         >
           <span>Publish</span>
@@ -420,13 +389,11 @@
             alt=""
           >
         </button>
-
       </footer>
 
     </section>
 
     @if (publishMessageVisible) {
-
       <div class="publish-message">
 
         <button
@@ -447,7 +414,6 @@
         </span>
 
       </div>
-
     }
 
   </main>
