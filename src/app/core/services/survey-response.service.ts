@@ -32,7 +32,7 @@ export class SurveyResponseService {
    * @param surveyId Identifier of the survey.
    * @param questionId Identifier of the question.
    * @param selectedOptions Selected answer option keys.
-   * @returns The stored response.
+   * @returns The result of the insert operation.
    */
   async saveResponse(
     surveyId: string,
@@ -48,9 +48,7 @@ export class SurveyResponseService {
         survey_id: surveyId,
         question_id: questionId,
         selected_options: selectedOptions
-      })
-      .select()
-      .single();
+      });
   }
 
   /**

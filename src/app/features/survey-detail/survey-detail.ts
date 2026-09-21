@@ -9,12 +9,14 @@ import {
 } from '@angular/core';
 import { SURVEY_DATA } from '../../core/data/survey-data';
 import { SurveyData, SurveyQuestion } from '../../core/models/survey.model';
+import { SurveyResponseService } from '../../core/services/survey-response.service';
+
+type VoteMap = Record<number, Record<string, number>>;
+type VoteResult = { key: string; votes: number };
 
 /**
- * Displays the detail view of a selected survey.
- *
- * Handles answer selection, validation, live results
- * and survey completion.
+ * Displays a survey and handles selections,
+ * live results and persisted responses.
  */
 @Component({
   selector: 'app-survey-detail',
@@ -24,38 +26,15 @@ import { SurveyData, SurveyQuestion } from '../../core/models/survey.model';
   styleUrl: './survey-detail.scss'
 })
 export class SurveyDetailComponent implements OnInit {
-
-  /**
-   * Identifier of the survey that should be displayed.
-   */
+  /** Selected survey and detail events. */
   @Input() surveyId: string | null = null;
-
-  /**
-   * Emits when the survey detail view should be closed.
-   */
   @Output() closeDetail = new EventEmitter<void>();
-
-  /**
-   * Emits when the create-survey view should be opened.
-   */
   @Output() openCreate = new EventEmitter<void>();
 
-  /**
-   * Currently displayed survey.
-   */
+  /** Current survey and answer state. */
   survey: SurveyData | null = null;
-
-  /**
-   * Stores the selected answer keys for each question.
-   */
-  selectedOptions: { [questionId: number]: string[] } = {};
-
-  /**
-   * Stores the result percentages before the current selection.
-   */
-  private originalPercentages: {
-    [questionId: number]: { [optionKey: string]: number };
-  } = {};
+  selectedOptions: Record<number, string[]> = {};
+  private storedVotes: VoteMap = {};
 
   isSubmitted = false;
   submittedAttempted = false;
@@ -64,88 +43,138 @@ export class SurveyDetailComponent implements OnInit {
   showAlreadyCompletedPopup = false;
   showResultsMobile = false;
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private surveyResponseService: SurveyResponseService
+  ) {}
 
-  /**
-   * Loads the selected survey when the component starts.
-   */
+  /** Loads the selected survey on start. */
   ngOnInit(): void {
-    this.loadSurvey();
+    void this.loadSurvey();
   }
 
-  /**
-   * Loads the selected survey and resets its answer state.
-   */
-  loadSurvey(): void {
-    if (!this.surveyId) {
+  /** Loads the survey and its persisted results. */
+  async loadSurvey(): Promise<void> {
+    const source = SURVEY_DATA.find(item => item.id === this.surveyId);
+    if (!source) {
       this.survey = null;
       return;
     }
 
-    this.survey =
-      SURVEY_DATA.find(survey => survey.id === this.surveyId) ?? null;
+    this.survey = structuredClone(source);
+    this.resetState();
+    await this.loadStoredResults();
+  }
 
+  /** Resets the temporary survey state. */
+  private resetState(): void {
     this.selectedOptions = {};
+    this.storedVotes = {};
     this.isSubmitted = false;
     this.submittedAttempted = false;
-    this.storeOriginalPercentages();
+    this.showCompletePopup = false;
+    this.showMissingPopup = false;
   }
 
-  /**
-   * Stores the current percentages for live result calculations.
-   */
-  private storeOriginalPercentages(): void {
-    this.originalPercentages = {};
-
+  /** Loads stored survey responses from Supabase. */
+  private async loadStoredResults(): Promise<void> {
     if (!this.survey) return;
+    const result = await this.surveyResponseService
+      .loadResponses(this.survey.id);
 
-    for (const question of this.survey.questions) {
-      this.originalPercentages[question.id] = {};
-
-      for (const option of question.options) {
-        this.originalPercentages[question.id][option.key] = option.percentage;
-      }
+    if (result.error) {
+      console.error('Could not load survey responses:', result.error);
+      return;
     }
+
+    this.createVoteMap();
+    this.countResponses(result.data ?? []);
+    this.updateAllResults();
+    this.cdr.detectChanges();
   }
 
-  /**
-   * Restores the result percentages that existed
-   * before the current answer selection.
-   */
-  private restoreOriginalPercentages(): void {
-    if (!this.survey) return;
-
-    for (const question of this.survey.questions) {
-      const original = this.originalPercentages[question.id];
-
-      if (!original) continue;
-
-      for (const option of question.options) {
-        option.percentage =
-          original[option.key] ?? option.percentage;
-      }
-    }
+  /** Creates vote counters for every answer option. */
+  private createVoteMap(): void {
+    this.storedVotes = {};
+    this.survey?.questions.forEach(question => {
+      this.storedVotes[question.id] = {};
+      question.options.forEach(option =>
+        this.storedVotes[question.id][option.key] = 0
+      );
+    });
   }
 
-  /**
-   * Splits the survey title for the styled headline.
-   *
-   * @returns The separated title information.
-   */
+  /** Counts the responses stored in Supabase. */
+  private countResponses(responses: any[]): void {
+    responses.forEach(response => {
+      const votes = this.storedVotes[response.question_id];
+      if (!votes) return;
+
+      (response.selected_options ?? []).forEach((key: string) => {
+        if (votes[key] !== undefined) votes[key]++;
+      });
+    });
+  }
+
+  /** Updates the results of all survey questions. */
+  private updateAllResults(): void {
+    this.survey?.questions.forEach(
+      question => this.updateQuestionResults(question)
+    );
+  }
+
+  /** Updates the result of one survey question. */
+  private updateQuestionResults(question: SurveyQuestion): void {
+    const votes = this.getVotes(question);
+    const total = votes.reduce((sum, item) => sum + item.votes, 0);
+
+    if (!total) {
+      question.options.forEach(option => option.percentage = 0);
+      return;
+    }
+
+    this.applyPercentages(question, votes, total);
+  }
+
+  /** Combines stored votes with the live selection. */
+  private getVotes(question: SurveyQuestion): VoteResult[] {
+    const stored = this.storedVotes[question.id] ?? {};
+    const selected = this.selectedOptions[question.id] ?? [];
+
+    return question.options.map(option => ({
+      key: option.key,
+      votes: (stored[option.key] ?? 0) +
+        (selected.includes(option.key) ? 1 : 0)
+    }));
+  }
+
+  /** Calculates and applies the result percentages. */
+  private applyPercentages(
+    question: SurveyQuestion,
+    votes: VoteResult[],
+    total: number
+  ): void {
+    const values = votes.map(item =>
+      Math.round((item.votes / total) * 100)
+    );
+    const difference = 100 - values.reduce((a, b) => a + b, 0);
+    if (values.length) values[0] += difference;
+
+    question.options.forEach((option, index) => {
+      option.percentage = values[index];
+    });
+  }
+
+  /** Returns the survey title as styled parts. */
   get titleParts(): {
     prefix: string;
     hasDot: boolean;
     suffix: string;
   } {
-    const title = this.survey?.title;
-
-    if (!title) {
-      return { prefix: '', hasDot: false, suffix: '' };
-    }
-
+    const title = this.survey?.title ?? '';
     const index = title.indexOf("'");
 
-    if (index === -1) {
+    if (index < 0) {
       return { prefix: title, hasDot: false, suffix: '' };
     }
 
@@ -156,240 +185,169 @@ export class SurveyDetailComponent implements OnInit {
     };
   }
 
-  /**
-   * Checks whether the survey contains result values.
-   *
-   * @returns True when at least one result is available.
-   */
+  /** Returns whether survey results are available. */
   get hasResults(): boolean {
-    return (
-      this.survey?.questions.some(question =>
-        question.options.some(option => option.percentage > 0)
-      ) ?? false
-    );
+    return this.survey?.questions.some(question =>
+      question.options.some(option => option.percentage > 0)
+    ) ?? false;
   }
 
-  /**
-   * Checks whether the selected survey has ended.
-   *
-   * @returns True when the survey has the Past status.
-   */
+  /** Returns whether the survey has ended. */
   get isSurveyEnded(): boolean {
     return this.survey?.status === 'Past';
   }
 
-  /**
-   * Returns all questions without a selected answer.
-   *
-   * @returns The unanswered questions.
-   */
+  /** Returns all unanswered survey questions. */
   get unansweredQuestions(): SurveyQuestion[] {
-    if (!this.survey) return [];
-
-    return this.survey.questions.filter(
+    return this.survey?.questions.filter(
       question => !this.selectedOptions[question.id]?.length
-    );
+    ) ?? [];
   }
 
-  /**
-   * Checks whether every survey question has been answered.
-   *
-   * @returns True when all questions have an answer.
-   */
+  /** Returns whether every question has an answer. */
   get allQuestionsAnswered(): boolean {
     return !!this.survey?.questions.length &&
       this.unansweredQuestions.length === 0;
   }
 
-  /**
-   * Checks whether an answer option is selected.
-   *
-   * @param questionId Identifier of the question.
-   * @param optionKey Key of the answer option.
-   * @returns True when the option is selected.
-   */
+  /** Checks whether an answer option is selected. */
   isSelected(questionId: number, optionKey: string): boolean {
     return this.selectedOptions[questionId]?.includes(optionKey) ?? false;
   }
 
-  /**
-   * Checks whether a question allows multiple answers.
-   *
-   * @param question Question that should be checked.
-   * @returns True when multiple answers are allowed.
-   */
+  /** Checks whether multiple answers are allowed. */
   allowsMultipleAnswers(question: SurveyQuestion): boolean {
-    return question.subtitle === 'More than one answer is possible.';
+    return question.subtitle ===
+      'More than one answer is possible.';
   }
 
-  /**
-   * Selects or removes an answer option.
-   *
-   * Multiple-choice questions allow several selections.
-   * All other questions allow only one selection.
-   *
-   * @param questionId Identifier of the question.
-   * @param optionKey Key of the selected answer.
-   */
+  /** Selects an option and updates its live result. */
   toggleOption(questionId: number, optionKey: string): void {
     if (this.isSubmitted || this.isSurveyEnded || !this.survey) return;
-
-    const question = this.survey.questions.find(
-      question => question.id === questionId
-    );
-
+    const question = this.survey.questions.find(q => q.id === questionId);
     if (!question) return;
 
-    const currentOptions = this.selectedOptions[questionId] ?? [];
-
-    if (this.allowsMultipleAnswers(question)) {
-      this.selectedOptions[questionId] = currentOptions.includes(optionKey)
-        ? currentOptions.filter(key => key !== optionKey)
-        : [...currentOptions, optionKey];
-    } else {
-      this.selectedOptions[questionId] = currentOptions.includes(optionKey)
-        ? []
-        : [optionKey];
-    }
-
-    this.updateLiveResults(question);
+    this.changeSelection(question, optionKey);
+    this.updateQuestionResults(question);
 
     if (this.showMissingPopup && this.allQuestionsAnswered) {
       this.showMissingPopup = false;
     }
   }
 
-  /**
-   * Updates the displayed result percentages while answers are selected.
-   *
-   * @param question Question whose results should be updated.
-   */
-  private updateLiveResults(question: SurveyQuestion): void {
-    const original = this.originalPercentages[question.id];
+  /** Handles single- and multiple-choice selections. */
+  private changeSelection(
+    question: SurveyQuestion,
+    optionKey: string
+  ): void {
+    const current = this.selectedOptions[question.id] ?? [];
 
-    if (!original) return;
-
-    const selected = this.selectedOptions[question.id] ?? [];
-
-    if (!selected.length) {
-      question.options.forEach(option => {
-        option.percentage = original[option.key] ?? 0;
-      });
+    if (this.allowsMultipleAnswers(question)) {
+      this.selectedOptions[question.id] = current.includes(optionKey)
+        ? current.filter(key => key !== optionKey)
+        : [...current, optionKey];
       return;
     }
 
-    const weightedValues = question.options.map(option => ({
-      option,
-      value:
-        (original[option.key] ?? 0) +
-        (selected.includes(option.key) ? 10 : 0)
-    }));
-
-    const total = weightedValues.reduce(
-      (sum, item) => sum + item.value,
-      0
-    );
-
-    if (!total) return;
-
-    const percentages = weightedValues.map(item => ({
-      option: item.option,
-      percentage: Math.round((item.value / total) * 100)
-    }));
-
-    const percentageTotal = percentages.reduce(
-      (sum, item) => sum + item.percentage,
-      0
-    );
-
-    if (percentages.length && percentageTotal !== 100) {
-      percentages[0].percentage += 100 - percentageTotal;
-    }
-
-    percentages.forEach(item => {
-      item.option.percentage = item.percentage;
-    });
+    this.selectedOptions[question.id] =
+      current.includes(optionKey) ? [] : [optionKey];
   }
 
-  /**
-   * Completes the survey when all questions are answered.
-   */
-  completeSurvey(): void {
-    if (this.isSubmitted || this.isSurveyEnded) return;
-
+  /** Validates and submits the completed survey. */
+  async completeSurvey(): Promise<void> {
+    if (this.isSubmitted || this.isSurveyEnded || !this.survey) return;
     if (!this.allQuestionsAnswered) {
       this.showValidationError();
       return;
     }
 
+    if (!await this.saveResponses()) return;
+    this.setSubmittedState();
+    await this.reloadResults();
+    this.hideCompletePopupLater();
+  }
+
+  /** Saves all selected answers to Supabase. */
+  private async saveResponses(): Promise<boolean> {
+    if (!this.survey) return false;
+
+    for (const question of this.survey.questions) {
+      const answers = this.selectedOptions[question.id] ?? [];
+      const result = await this.surveyResponseService
+        .saveResponse(this.survey.id, question.id, answers);
+
+      if (result.error) {
+        console.error('Could not save survey response:', result.error);
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /** Sets the state after successful submission. */
+  private setSubmittedState(): void {
     this.isSubmitted = true;
     this.submittedAttempted = false;
     this.showMissingPopup = false;
     this.showCompletePopup = true;
+  }
 
-    this.storeOriginalPercentages();
+  /** Reloads the persisted results after submission. */
+  private async reloadResults(): Promise<void> {
+    const answers = { ...this.selectedOptions };
+    this.selectedOptions = {};
+    await this.loadStoredResults();
+    this.selectedOptions = answers;
+    this.isSubmitted = true;
+    this.cdr.detectChanges();
+  }
 
+  /** Hides the completion popup after three seconds. */
+  private hideCompletePopupLater(): void {
     setTimeout(() => {
       this.showCompletePopup = false;
       this.cdr.detectChanges();
     }, 3000);
   }
 
-  /**
-   * Displays the validation message for unanswered questions.
-   */
+  /** Shows the missing-answer validation popup. */
   private showValidationError(): void {
     this.submittedAttempted = true;
     this.showMissingPopup = true;
 
     setTimeout(() => {
       this.showMissingPopup = false;
+      this.cdr.detectChanges();
     }, 3000);
   }
 
-  /**
-   * Closes the missing-answer popup.
-   */
+  /** Closes the missing-answer popup. */
   closeMissingPopup(): void {
     this.showMissingPopup = false;
   }
 
-  /**
-   * Closes the completion popup.
-   */
+  /** Closes the completion popup. */
   closeCompletePopup(): void {
     this.showCompletePopup = false;
   }
 
-  /**
-   * Closes the already-completed popup.
-   */
+  /** Closes the already-completed popup. */
   closeAlreadyCompletedPopup(): void {
     this.showAlreadyCompletedPopup = false;
   }
 
-  /**
-   * Shows or hides survey results on mobile devices.
-   */
+  /** Toggles the mobile results view. */
   toggleResultsMobile(): void {
     this.showResultsMobile = !this.showResultsMobile;
   }
 
-  /**
-   * Opens the create-survey view.
-   */
+  /** Opens the create-survey view. */
   openCreateFromHeader(): void {
     this.openCreate.emit();
   }
 
-  /**
-   * Closes the survey detail view.
-   */
+  /** Closes the survey detail view. */
   closeSurveyDetail(): void {
-    if (!this.isSubmitted) {
-      this.restoreOriginalPercentages();
-    }
-
     this.closeDetail.emit();
   }
 }
