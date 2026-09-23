@@ -8,6 +8,8 @@ import {
 import { FormsModule } from '@angular/forms';
 
 import { SurveyData } from '../../core/models/survey.model';
+import { SurveyManagerService } from
+  '../../core/services/survey-manager.service';
 
 /** Represents a single answer while creating a survey. */
 interface CreateAnswer {
@@ -52,6 +54,10 @@ export class CreateComponent {
 
   private publishedSurvey: SurveyData | null = null;
 
+  constructor(
+    private readonly surveyManagerService: SurveyManagerService
+  ) {}
+
   /** Categories available when creating a survey. */
   categoryOptions: string[] = [
     'All Surveys',
@@ -74,7 +80,6 @@ export class CreateComponent {
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
-
     return `${year}-${month}-${day}`;
   }
 
@@ -163,7 +168,6 @@ export class CreateComponent {
   addQuestion(): void {
     const ids = this.surveyQuestions.map(question => question.id);
     const nextId = Math.max(...ids) + 1;
-
     this.surveyQuestions.push(this.createEmptyQuestion(nextId));
   }
 
@@ -173,34 +177,35 @@ export class CreateComponent {
       this.clearQuestion(this.surveyQuestions[0]);
       return;
     }
-
     this.surveyQuestions.splice(questionIndex, 1);
   }
 
   /** Adds another answer option. */
   addAnswer(question: CreateQuestion): void {
-    if (question.answers.length >= 5) {
-      return;
-    }
+    if (question.answers.length >= 5) return;
 
-    const nextLetter = String.fromCharCode(65 + question.answers.length);
+    const nextLetter = String.fromCharCode(
+      65 + question.answers.length
+    );
     question.answers.push(this.createEmptyAnswer(nextLetter));
   }
 
   /** Deletes an answer option. */
-  deleteAnswer(question: CreateQuestion, answerIndex: number): void {
+  deleteAnswer(
+    question: CreateQuestion,
+    answerIndex: number
+  ): void {
     if (question.answers.length <= 2) {
       question.answers[answerIndex].text = '';
       question.answers[answerIndex].touched = true;
       return;
     }
-
     question.answers.splice(answerIndex, 1);
     this.updateAnswerLetters(question);
   }
 
-  /** Validates and prepares the survey for publishing. */
-  publishSurvey(): void {
+  /** Validates, stores and publishes the survey. */
+  async publishSurvey(): Promise<void> {
     this.publishAttempted = true;
 
     if (!this.formIsComplete()) {
@@ -208,19 +213,43 @@ export class CreateComponent {
       return;
     }
 
-    this.publishedSurvey = this.createSurveyData();
+    const survey = this.createSurveyData();
+    if (!await this.saveSurvey(survey)) return;
+
+    this.publishedSurvey = survey;
+    this.surveyPublished.emit(survey);
     this.publishClicked = true;
     this.publishMessageVisible = true;
   }
 
-  /** Closes the confirmation and publishes the survey. */
-  closePublishMessage(): void {
-    if (!this.publishedSurvey) {
-      return;
-    }
+  /** Saves the new survey in Supabase. */
+  private async saveSurvey(survey: SurveyData): Promise<boolean> {
+    const result = await this.surveyManagerService
+      .createSurvey(this.toStorageData(survey));
 
+    if (!result.error) return true;
+
+    console.error('Could not save survey:', result.error);
+    this.publishClicked = false;
+    return false;
+  }
+
+  /** Converts survey data for the Supabase table. */
+  private toStorageData(survey: SurveyData): object {
+    return {
+      id: survey.id,
+      title: survey.title,
+      category: survey.category,
+      ends_on: survey.endsOn ?? null,
+      description: survey.description,
+      questions: survey.questions
+    };
+  }
+
+  /** Closes the publish confirmation. */
+  closePublishMessage(): void {
     this.publishMessageVisible = false;
-    this.surveyPublished.emit(this.publishedSurvey);
+    this.closeCreate.emit();
   }
 
   /** Checks whether all required fields are valid. */
@@ -229,7 +258,8 @@ export class CreateComponent {
       return false;
     }
 
-    if (this.surveyEndDate && this.surveyEndDate < this.minimumDate) {
+    if (this.surveyEndDate &&
+        this.surveyEndDate < this.minimumDate) {
       return false;
     }
 
@@ -279,9 +309,7 @@ export class CreateComponent {
 
   /** Converts the date input into DD.MM.YYYY. */
   private formatEndDate(): string {
-    if (!this.surveyEndDate) {
-      return '';
-    }
+    if (!this.surveyEndDate) return '';
 
     const [year, month, day] = this.surveyEndDate.split('-');
     return `${day}.${month}.${year}`;

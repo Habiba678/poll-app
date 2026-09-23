@@ -376,7 +376,7 @@
     width: 206px;
     position: absolute;
     top: 40px;
-    left: 0px;
+    left: 0;
     z-index: 20;
     padding: 8px 4px;
     box-sizing: border-box;
@@ -408,7 +408,7 @@
       transition:
         background-color 0.2s ease,
         color 0.2s ease;
-  
+
       &:focus,
       &:focus-visible {
         outline: none;
@@ -764,8 +764,9 @@
     }
 
     &-heading {
-      max-width: 245px;
-      font-size: 35px;
+      max-width: none;
+      font-size: 43px;
+      line-height: 0.95;
       white-space: nowrap;
     }
 
@@ -912,12 +913,13 @@
 
     &-heading {
       max-width: 220px;
-      font-size: 25px;
+      font-size: 43px;
+      white-space: normal;
     }
 
     &-cancel {
       top: 24px;
-      right: 14px;
+      right: 26px;
     }
 
     &-body-scroll {
@@ -972,7 +974,7 @@
     }
 
     &-cancel {
-      right: 10px;
+      right: 26px;
     }
 
     &-body-scroll {
