@@ -63,6 +63,7 @@ export class SurveyDetailComponent implements OnInit {
 
     this.survey = structuredClone(source);
     this.resetState();
+    this.restoreSubmittedState();
     await this.loadStoredResults();
   }
 
@@ -76,9 +77,18 @@ export class SurveyDetailComponent implements OnInit {
     this.showMissingPopup = false;
   }
 
+  /** Restores whether this survey was already completed. */
+  private restoreSubmittedState(): void {
+    if (!this.survey) return;
+
+    this.isSubmitted =
+      localStorage.getItem(`survey-completed-${this.survey.id}`) === 'true';
+  }
+
   /** Loads stored survey responses from Supabase. */
   private async loadStoredResults(): Promise<void> {
     if (!this.survey) return;
+
     const result = await this.surveyResponseService
       .loadResponses(this.survey.id);
 
@@ -96,6 +106,7 @@ export class SurveyDetailComponent implements OnInit {
   /** Creates vote counters for every answer option. */
   private createVoteMap(): void {
     this.storedVotes = {};
+
     this.survey?.questions.forEach(question => {
       this.storedVotes[question.id] = {};
       question.options.forEach(option =>
@@ -157,6 +168,7 @@ export class SurveyDetailComponent implements OnInit {
     const values = votes.map(item =>
       Math.round((item.votes / total) * 100)
     );
+
     const difference = 100 - values.reduce((a, b) => a + b, 0);
     if (values.length) values[0] += difference;
 
@@ -224,6 +236,7 @@ export class SurveyDetailComponent implements OnInit {
   /** Selects an option and updates its live result. */
   toggleOption(questionId: number, optionKey: string): void {
     if (this.isSubmitted || this.isSurveyEnded || !this.survey) return;
+
     const question = this.survey.questions.find(q => q.id === questionId);
     if (!question) return;
 
@@ -256,12 +269,14 @@ export class SurveyDetailComponent implements OnInit {
   /** Validates and submits the completed survey. */
   async completeSurvey(): Promise<void> {
     if (this.isSubmitted || this.isSurveyEnded || !this.survey) return;
+
     if (!this.allQuestionsAnswered) {
       this.showValidationError();
       return;
     }
 
     if (!await this.saveResponses()) return;
+
     this.setSubmittedState();
     await this.reloadResults();
     this.hideCompletePopupLater();
@@ -281,22 +296,32 @@ export class SurveyDetailComponent implements OnInit {
         return false;
       }
     }
+
     return true;
   }
 
   /** Sets the state after successful submission. */
   private setSubmittedState(): void {
+    if (!this.survey) return;
+
     this.isSubmitted = true;
     this.submittedAttempted = false;
     this.showMissingPopup = false;
     this.showCompletePopup = true;
+
+    localStorage.setItem(
+      `survey-completed-${this.survey.id}`,
+      'true'
+    );
   }
 
   /** Reloads the persisted results after submission. */
   private async reloadResults(): Promise<void> {
     const answers = { ...this.selectedOptions };
     this.selectedOptions = {};
+
     await this.loadStoredResults();
+
     this.selectedOptions = answers;
     this.isSubmitted = true;
     this.cdr.detectChanges();
